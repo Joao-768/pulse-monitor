@@ -4,10 +4,10 @@ export type Variant = 'primary' | 'secondary' | 'danger' | 'ghost'
 export type Size = 'sm' | 'md' | 'lg'
 
 const VARIANTS: Record<Variant, string> = {
-    primary: 'bg-ink text-white hover:bg-[#1d2a3a] disabled:bg-ink-3',
+    primary: 'bg-primary text-primary-fg hover:bg-primary-hover disabled:opacity-50',
     secondary:
         'bg-surface text-ink border border-rule-strong hover:border-ink-3 hover:bg-paper disabled:text-ink-3',
-    danger: 'bg-down text-white hover:bg-[#bf2d32] disabled:opacity-60',
+    danger: 'bg-down text-white hover:brightness-95 disabled:opacity-60',
     ghost: 'text-ink-2 hover:text-ink hover:bg-ink/5',
 }
 

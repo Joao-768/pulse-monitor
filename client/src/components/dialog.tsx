@@ -36,7 +36,7 @@ export function Dialog({
             onClick={(event) => {
                 if (event.target === ref.current) onClose()
             }}
-            className="m-auto w-[min(100vw-2rem,30rem)] rounded-lg border border-rule bg-surface p-0 text-ink shadow-2xl backdrop:bg-ink/45"
+            className="m-auto w-[min(100vw-2rem,30rem)] rounded-lg border border-rule bg-surface p-0 text-ink shadow-2xl backdrop:bg-black/55"
         >
             {open ? (
                 <div className="p-6">

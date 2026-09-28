@@ -48,7 +48,7 @@ export function IncidentsPage() {
                             className={cn(
                                 'h-8 rounded px-3 text-[13px] font-medium',
                                 status === item.key
-                                    ? 'bg-ink text-white'
+                                    ? 'bg-primary text-primary-fg'
                                     : 'text-ink-2 hover:bg-paper',
                             )}
                         >

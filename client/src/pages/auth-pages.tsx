@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/auth/auth-context'
 import { Logo } from '@/components/logo'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Alert, Button, Field, Spinner } from '@/components/ui'
 import { ApiError, api } from '@/lib/api'
 
@@ -18,14 +19,15 @@ function AuthLayout({
 }) {
     return (
         <div className="graph-paper flex min-h-svh flex-col">
-            <header className="px-5 py-5 sm:px-8">
+            <header className="flex items-center justify-between px-5 py-5 sm:px-8">
                 <Link to="/" aria-label="Pulse Monitor home">
                     <Logo />
                 </Link>
+                <ThemeToggle />
             </header>
             <main className="flex flex-1 items-start justify-center px-4 pt-[6vh] pb-16">
                 <div className="w-full max-w-[25rem]">
-                    <div className="rounded-xl border border-rule bg-surface p-7 shadow-[0_1px_0_var(--rule),0_12px_32px_-16px_rgb(14_22_33/0.25)] sm:p-8">
+                    <div className="rounded-xl border border-rule bg-surface p-7 shadow-[0_1px_0_var(--rule),0_12px_32px_-16px_var(--shadow)] sm:p-8">
                         <h1 className="text-[22px] font-semibold tracking-[-0.02em]">{title}</h1>
                         {subtitle ? <p className="mt-1.5 text-sm text-ink-2">{subtitle}</p> : null}
                         <div className="mt-6">{children}</div>

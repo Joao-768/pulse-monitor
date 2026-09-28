@@ -59,7 +59,9 @@ function PeriodPicker({
                     onClick={() => onChange(period.key)}
                     className={cn(
                         'h-8 min-w-12 rounded px-3 font-mono text-[13px] transition-colors',
-                        value === period.key ? 'bg-ink text-white' : 'text-ink-2 hover:bg-paper',
+                        value === period.key
+                            ? 'bg-primary text-primary-fg'
+                            : 'text-ink-2 hover:bg-paper',
                     )}
                 >
                     {period.label}
@@ -96,7 +98,7 @@ function StateBanner({ detail }: { detail: MonitorDetail }) {
     const { monitor, activeIncident, lastCheck } = detail
     if (monitor.status === 'DOWN' && activeIncident) {
         return (
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-down/30 bg-down-soft px-4 py-3 text-[#8f1f23]">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-down/30 bg-down-soft px-4 py-3 text-down-text">
                 <strong className="font-semibold">
                     Down for {formatDuration(now - new Date(activeIncident.startedAt).getTime())}
                 </strong>
@@ -125,7 +127,7 @@ function StateBanner({ detail }: { detail: MonitorDetail }) {
     }
     if (monitor.status === 'PENDING' || monitor.retryPending) {
         return (
-            <div className="rounded-lg border border-pending/30 bg-pending-soft px-4 py-3 text-sm text-[#7a4f00]">
+            <div className="rounded-lg border border-pending/30 bg-pending-soft px-4 py-3 text-sm text-pending-text">
                 {monitor.retryPending
                     ? 'The last check failed. A retry runs in a few seconds before this is treated as downtime.'
                     : 'Running a check now. The status updates as soon as it answers.'}
@@ -139,7 +141,7 @@ function incidentLabel(incident: Incident) {
     if (incident.active) return { text: 'Ongoing', className: 'bg-down text-white' }
     if (incident.resolution === 'PAUSED')
         return { text: 'Ended by pause', className: 'bg-paused-soft text-ink-2' }
-    return { text: 'Resolved', className: 'bg-up-soft text-[#0a6e45]' }
+    return { text: 'Resolved', className: 'bg-up-soft text-up-text' }
 }
 
 function IncidentList({ incidents }: { incidents: Incident[] }) {
@@ -230,7 +232,7 @@ function ChecksTable({ monitorId, period }: { monitorId: string; period: PeriodK
                                 className={cn(
                                     'h-7 rounded px-2.5 text-[12px] font-medium',
                                     filter === item.key
-                                        ? 'bg-ink text-white'
+                                        ? 'bg-primary text-primary-fg'
                                         : 'text-ink-2 hover:bg-paper',
                                 )}
                             >
@@ -283,7 +285,7 @@ function ChecksTable({ monitorId, period }: { monitorId: string; period: PeriodK
                                         {check.status === 'SUCCESS' ? 'Success' : 'Failure'}
                                     </span>
                                     {check.isRetry ? (
-                                        <span className="ml-2 rounded border border-pending/40 bg-pending-soft px-1.5 py-px font-mono text-[10px] text-[#7a4f00] uppercase">
+                                        <span className="ml-2 rounded border border-pending/40 bg-pending-soft px-1.5 py-px font-mono text-[10px] text-pending-text uppercase">
                                             Retry
                                         </span>
                                     ) : null}

@@ -83,7 +83,7 @@ function exampleData() {
 function ExampleMonitor() {
     const { timeline, points } = useMemo(() => exampleData(), [])
     return (
-        <div className="rounded-xl border border-rule bg-surface shadow-[0_24px_48px_-28px_rgb(14_22_33/0.35)]">
+        <div className="rounded-xl border border-rule bg-surface shadow-[0_24px_48px_-28px_var(--shadow)]">
             <div className="flex items-start justify-between gap-4 border-b border-rule px-5 py-4">
                 <div className="min-w-0">
                     <p className="text-[15px] font-semibold">Checkout API</p>

@@ -17,9 +17,9 @@ const DOT: Record<MonitorStatus, string> = {
 }
 
 const BADGE: Record<MonitorStatus, string> = {
-    UP: 'bg-up-soft text-[#0a6e45]',
-    DOWN: 'bg-down-soft text-[#a1242a]',
-    PENDING: 'bg-pending-soft text-[#8a5900]',
+    UP: 'bg-up-soft text-up-text',
+    DOWN: 'bg-down-soft text-down-text',
+    PENDING: 'bg-pending-soft text-pending-text',
     PAUSED: 'bg-paused-soft text-ink-2',
 }
 

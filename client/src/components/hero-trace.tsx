@@ -66,7 +66,7 @@ function Note({
         ink: 'border-ink-3 text-ink-2',
         down: 'border-down text-down',
         up: 'border-up text-up',
-        pending: 'border-pending text-[#8a5900]',
+        pending: 'border-pending text-pending-text',
     }[tone]
     return (
         <div

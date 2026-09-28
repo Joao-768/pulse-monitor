@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/auth/auth-context'
 import { Logo } from '@/components/logo'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { ButtonLink } from '@/components/ui'
 
 export function PublicHeader() {
@@ -29,6 +30,7 @@ export function PublicHeader() {
                     </Link>
                 </nav>
                 <div className="ml-auto flex items-center gap-2">
+                    <ThemeToggle />
                     {user ? (
                         <ButtonLink to="/app" size="sm">
                             Open dashboard

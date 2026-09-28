@@ -105,8 +105,8 @@ export function Alert({
             className={cn(
                 'rounded-md border px-3.5 py-2.5 text-sm',
                 tone === 'error'
-                    ? 'border-down/30 bg-down-soft text-[#8f1f23]'
-                    : 'border-signal/25 bg-signal-soft text-[#1f2d99]',
+                    ? 'border-down/30 bg-down-soft text-down-text'
+                    : 'border-signal/25 bg-signal-soft text-signal-text',
             )}
         >
             {children}

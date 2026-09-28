@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useAuth } from '@/auth/auth-context'
 import { Logo } from '@/components/logo'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { useApi } from '@/hooks/use-api'
 import { cn } from '@/lib/utils'
 
@@ -55,7 +56,7 @@ export function AppShell() {
     return (
         <div className="min-h-svh">
             {/* One row from sm up; on phones the tabs drop to a second row. */}
-            <header className="sticky top-0 z-30 bg-ink">
+            <header className="sticky top-0 z-30 border-b border-white/8 bg-masthead">
                 <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 px-4 sm:h-14 sm:flex-nowrap sm:px-6">
                     <NavLink
                         to="/app"
@@ -81,7 +82,7 @@ export function AppShell() {
                             ) : null}
                         </NavItem>
                     </nav>
-                    <div className="ml-auto flex shrink-0 items-center gap-3">
+                    <div className="ml-auto flex shrink-0 items-center gap-2">
                         <div className="hidden text-right leading-tight md:block">
                             <div className="max-w-[16rem] truncate text-[13px] text-white/85">
                                 {user?.email}
@@ -90,6 +91,7 @@ export function AppShell() {
                                 {user?.plan.name} plan
                             </div>
                         </div>
+                        <ThemeToggle onDark />
                         <button
                             type="button"
                             onClick={handleLogout}

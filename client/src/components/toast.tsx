@@ -35,8 +35,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         key={toast.id}
                         role="status"
                         className={cn(
-                            'pointer-events-auto flex items-center gap-3 rounded-md px-4 py-2.5 text-sm text-white shadow-lg',
-                            toast.tone === 'error' ? 'bg-down' : 'bg-ink',
+                            'pointer-events-auto flex items-center gap-3 rounded-md px-4 py-2.5 text-sm shadow-lg',
+                            toast.tone === 'error'
+                                ? 'bg-down text-white'
+                                : 'bg-primary text-primary-fg',
                         )}
                     >
                         <span

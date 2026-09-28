@@ -4,8 +4,11 @@
  * Pulse Monitor tokens.
  * Cool instrument-panel greys, a deep ink, and status colours that mean one
  * thing each. The brand colour ("signal") is never used for a status.
+ * The theme is set on <html data-theme> by /theme.js before first paint.
  */
 :root {
+    color-scheme: light;
+
     --ink: #0e1621;
     --ink-2: #435061;
     --ink-3: #6b7787;
@@ -17,16 +20,30 @@
 
     --signal: #3346d3;
     --signal-soft: #e6e9fb;
+    --signal-text: #1f2d99;
 
     --up: #0f9960;
     --up-soft: #dcf3e8;
+    --up-text: #0a6e45;
     --down: #d93a3f;
     --down-soft: #fbe3e3;
+    --down-text: #8f1f23;
     --pending: #c98200;
     --pending-soft: #fbf0d6;
+    --pending-text: #7a4f00;
     --paused: #7c8896;
     --paused-soft: #e7eaee;
-    --none: #e3e8ee;
+
+    /* Solid controls: primary buttons, selected segments, toasts. */
+    --primary: #0e1621;
+    --primary-hover: #1d2a3a;
+    --primary-fg: #ffffff;
+    /* The app masthead stays dark in both themes. */
+    --masthead: #0e1621;
+
+    --paper-line: rgb(51 70 211 / 0.09);
+    --paper-line-fine: rgb(51 70 211 / 0.04);
+    --shadow: rgb(14 22 33 / 0.25);
 
     --masthead-height: 56px;
 
@@ -54,6 +71,52 @@
     --chart-label: var(--ink-3);
 }
 
+/*
+ * Dark: the same instrument panel with the lights off. Surfaces step up in
+ * lightness (paper < surface < rules); status colours are lifted so they
+ * keep their contrast on dark, and their "soft" fills become deep tints.
+ */
+:root[data-theme='dark'] {
+    color-scheme: dark;
+
+    --ink: #e6ebf1;
+    --ink-2: #aab4c1;
+    --ink-3: #7f8a99;
+    --paper: #0a0f15;
+    --surface: #111822;
+    --rule: #212b37;
+    --rule-strong: #334152;
+    --grid: #202a36;
+
+    --signal: #8492ff;
+    --signal-soft: #1b2150;
+    --signal-text: #b7bfff;
+
+    --up: #2fbf7f;
+    --up-soft: #0f2a1f;
+    --up-text: #6fe0ab;
+    --down: #f0585d;
+    --down-soft: #351619;
+    --down-text: #ff9b9e;
+    --pending: #e3a21a;
+    --pending-soft: #2f2410;
+    --pending-text: #f5c96a;
+    --paused: #8793a2;
+    --paused-soft: #1c2430;
+
+    --primary: #e6ebf1;
+    --primary-hover: #c9d2dc;
+    --primary-fg: #0a0f15;
+    --masthead: #060a0f;
+
+    --paper-line: rgb(132 146 255 / 0.1);
+    --paper-line-fine: rgb(132 146 255 / 0.045);
+    --shadow: rgb(0 0 0 / 0.6);
+
+    --chart-tooltip-background: rgb(30 39 51 / 0.96);
+    --chart-marker-background: var(--surface);
+}
+
 @theme {
     --font-sans: 'Geologica', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'Azeret Mono', ui-monospace, 'SFMono-Regular', monospace;
@@ -68,6 +131,14 @@
     --color-grid: var(--grid);
     --color-signal: var(--signal);
     --color-signal-soft: var(--signal-soft);
+    --color-signal-text: var(--signal-text);
+    --color-up-text: var(--up-text);
+    --color-down-text: var(--down-text);
+    --color-pending-text: var(--pending-text);
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-primary-fg: var(--primary-fg);
+    --color-masthead: var(--masthead);
     --color-up: var(--up);
     --color-up-soft: var(--up-soft);
     --color-down: var(--down);
@@ -100,7 +171,7 @@
 
     ::selection {
         background: var(--signal);
-        color: #fff;
+        color: var(--primary-fg);
     }
 
     :focus-visible {
@@ -177,10 +248,10 @@
     .graph-paper {
         background-color: var(--surface);
         background-image:
-            linear-gradient(to right, rgb(51 70 211 / 0.09) 1px, transparent 1px),
-            linear-gradient(to bottom, rgb(51 70 211 / 0.09) 1px, transparent 1px),
-            linear-gradient(to right, rgb(51 70 211 / 0.04) 1px, transparent 1px),
-            linear-gradient(to bottom, rgb(51 70 211 / 0.04) 1px, transparent 1px);
+            linear-gradient(to right, var(--paper-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--paper-line) 1px, transparent 1px),
+            linear-gradient(to right, var(--paper-line-fine) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--paper-line-fine) 1px, transparent 1px);
         background-size:
             40px 40px,
             40px 40px,
