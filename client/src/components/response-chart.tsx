@@ -66,19 +66,25 @@ export function ResponseTimeChart({
             xDomain={domain}
         >
             <Grid horizontal numTicksRows={4} />
-            <Area dataKey="avg" fillOpacity={0.18} strokeWidth={1.75} />
+            <Area
+                dataKey="avg"
+                fill="var(--ink)"
+                stroke="var(--ink)"
+                fillOpacity={0.1}
+                strokeWidth={1.5}
+            />
             <YAxis numTicks={4} formatValue={(value) => formatMs(value)} />
             <XAxis numTicks={6} />
             <ChartTooltip
                 rows={(point) => {
                     const rows = [
                         {
-                            color: 'var(--signal)',
+                            color: 'var(--chart-tooltip-foreground)',
                             label: 'Average',
                             value: formatMs(point.avg as number),
                         },
                         {
-                            color: 'var(--ink-3)',
+                            color: 'var(--chart-tooltip-muted)',
                             label: 'Slowest',
                             value: formatMs(point.max as number),
                         },

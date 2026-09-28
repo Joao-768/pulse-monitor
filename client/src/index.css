@@ -49,7 +49,7 @@
 
     /* Bklit chart variables, mapped onto the palette. */
     --foreground: var(--ink);
-    --chart-1: var(--signal);
+    --chart-1: var(--ink);
     --chart-2: var(--ink-3);
     --chart-3: var(--down);
     --chart-4: var(--up);
@@ -57,7 +57,8 @@
     --chart-background: var(--surface);
     --chart-foreground: var(--ink);
     --chart-foreground-muted: var(--ink-3);
-    --chart-line-primary: var(--signal);
+    /* Charts draw in ink, like a strip-chart recorder: never the brand colour. */
+    --chart-line-primary: var(--ink);
     --chart-line-secondary: var(--ink-3);
     --chart-crosshair: var(--ink-2);
     --chart-grid: var(--grid);
