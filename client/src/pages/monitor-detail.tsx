@@ -445,7 +445,7 @@ export function MonitorDetailPage() {
                         href={monitor.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-1.5 inline-flex max-w-full items-center gap-1.5 font-mono text-[13px] break-all text-ink-2 hover:text-signal"
+                        className="mt-1.5 inline-flex max-w-full items-center gap-1.5 font-mono text-[13px] break-all text-ink-2 hover:text-ink"
                     >
                         {monitor.url}
                         <ExternalLink size={12} className="shrink-0" aria-hidden="true" />

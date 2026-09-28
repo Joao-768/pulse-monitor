@@ -92,7 +92,10 @@ export function LoginPage() {
             footer={
                 <>
                     No account yet?{' '}
-                    <Link to="/register" className="font-medium text-signal hover:underline">
+                    <Link
+                        to="/register"
+                        className="font-medium text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                    >
                         Create one for free
                     </Link>
                 </>
@@ -123,7 +126,7 @@ export function LoginPage() {
                     />
                     <Link
                         to="/forgot-password"
-                        className="mt-2 inline-block text-[13px] text-ink-2 hover:text-signal"
+                        className="mt-2 inline-block text-[13px] text-ink-2 hover:text-ink"
                     >
                         Forgot your password?
                     </Link>
@@ -163,7 +166,10 @@ export function RegisterPage() {
             footer={
                 <>
                     Already have an account?{' '}
-                    <Link to="/login" className="font-medium text-signal hover:underline">
+                    <Link
+                        to="/login"
+                        className="font-medium text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                    >
                         Log in
                     </Link>
                 </>
@@ -228,7 +234,10 @@ export function ForgotPasswordPage() {
             title="Reset your password"
             subtitle="Enter the email you signed up with. We send a link that works once, for 30 minutes."
             footer={
-                <Link to="/login" className="font-medium text-signal hover:underline">
+                <Link
+                    to="/login"
+                    className="font-medium text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                >
                     Back to login
                 </Link>
             }
@@ -241,7 +250,7 @@ export function ForgotPasswordPage() {
                         <button
                             type="button"
                             onClick={() => setSent('')}
-                            className="font-medium text-signal hover:underline"
+                            className="font-medium text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
                         >
                             try another email
                         </button>
@@ -322,12 +331,18 @@ export function ResetPasswordPage() {
                 title="This link has expired"
                 subtitle="Reset links work once and only for 30 minutes."
                 footer={
-                    <Link to="/login" className="font-medium text-signal hover:underline">
+                    <Link
+                        to="/login"
+                        className="font-medium text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                    >
                         Back to login
                     </Link>
                 }
             >
-                <Link to="/forgot-password" className="font-medium text-signal hover:underline">
+                <Link
+                    to="/forgot-password"
+                    className="font-medium text-ink underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                >
                     Request a new link
                 </Link>
             </AuthLayout>

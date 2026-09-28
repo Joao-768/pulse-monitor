@@ -102,7 +102,7 @@ export function IncidentsPage() {
                                             <td className="px-5 py-3">
                                                 <Link
                                                     to={`/app/monitors/${incident.monitorId}`}
-                                                    className="font-medium hover:text-signal hover:underline"
+                                                    className="font-medium hover:underline"
                                                 >
                                                     {incident.monitorName}
                                                 </Link>

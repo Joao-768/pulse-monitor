@@ -3,7 +3,8 @@
 /*
  * Pulse Monitor tokens.
  * Cool instrument-panel greys, a deep ink, and status colours that mean one
- * thing each. The brand colour ("signal") is never used for a status.
+ * thing each. The accent ("signal") is a neutral graphite, never a status
+ * colour and never a hue: the only colours on screen are the status ones.
  * The theme is set on <html data-theme> by /theme.js before first paint.
  */
 :root {
@@ -18,9 +19,9 @@
     --rule-strong: #b9c3ce;
     --grid: #e3e8ee;
 
-    --signal: #3346d3;
-    --signal-soft: #e6e9fb;
-    --signal-text: #1f2d99;
+    --signal: #2c3744;
+    --signal-soft: #e3e7ec;
+    --signal-text: #1b2430;
 
     --up: #0f9960;
     --up-soft: #dcf3e8;
@@ -41,8 +42,8 @@
     /* The app masthead stays dark in both themes. */
     --masthead: #0e1621;
 
-    --paper-line: rgb(51 70 211 / 0.09);
-    --paper-line-fine: rgb(51 70 211 / 0.04);
+    --paper-line: rgb(14 22 33 / 0.07);
+    --paper-line-fine: rgb(14 22 33 / 0.035);
     --shadow: rgb(14 22 33 / 0.25);
 
     --masthead-height: 56px;
@@ -89,9 +90,9 @@
     --rule-strong: #334152;
     --grid: #202a36;
 
-    --signal: #8492ff;
-    --signal-soft: #1b2150;
-    --signal-text: #b7bfff;
+    --signal: #c7d0da;
+    --signal-soft: #1b232e;
+    --signal-text: #dde3ea;
 
     --up: #2fbf7f;
     --up-soft: #0f2a1f;
@@ -110,8 +111,8 @@
     --primary-fg: #0a0f15;
     --masthead: #060a0f;
 
-    --paper-line: rgb(132 146 255 / 0.1);
-    --paper-line-fine: rgb(132 146 255 / 0.045);
+    --paper-line: rgb(230 235 241 / 0.06);
+    --paper-line-fine: rgb(230 235 241 / 0.028);
     --shadow: rgb(0 0 0 / 0.6);
 
     --chart-tooltip-background: rgb(30 39 51 / 0.96);
