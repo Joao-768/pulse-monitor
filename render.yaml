@@ -1,0 +1,33 @@
+# Render Blueprint: one web service (API + scheduler + built client) and one
+# PostgreSQL database. Deploy with "New > Blueprint" in the Render dashboard.
+
+databases:
+    - name: pulse-monitor-db
+      plan: basic-256mb
+      databaseName: pulse_monitor
+
+services:
+    - type: web
+      name: pulse-monitor
+      runtime: node
+      plan: starter
+      buildCommand: npm run build
+      startCommand: npm start
+      healthCheckPath: /api/health
+      envVars:
+          - key: NODE_ENV
+            value: production
+          - key: NODE_VERSION
+            value: '22'
+          - key: DATABASE_URL
+            fromDatabase:
+                name: pulse-monitor-db
+                property: connectionString
+          - key: JWT_SECRET
+            generateValue: true
+          - key: APP_URL
+            sync: false
+          - key: RESEND_API_KEY
+            sync: false
+          - key: EMAIL_FROM
+            sync: false

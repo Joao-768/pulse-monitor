@@ -133,7 +133,7 @@ const YAxisInner = memo(function YAxisInner({
                         }}
                     >
                         <span
-                            className="text-chart-label text-xs"
+                            className="text-chart-label font-mono text-[11px] whitespace-nowrap"
                             style={tick.labelColor ? { color: tick.labelColor } : undefined}
                         >
                             {tick.label}

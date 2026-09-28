@@ -7,7 +7,7 @@ import * as monitorService from '../services/monitor.service.js'
 import { resolvePeriod } from '../services/period.js'
 import { parsePage } from '../utils/validate.js'
 
-const CHECKS_PAGE_SIZE = 50
+const CHECKS_PAGE_SIZE = 25
 
 export async function list(req, res) {
     const monitors = await monitorRepository.listByUser(req.user.id)

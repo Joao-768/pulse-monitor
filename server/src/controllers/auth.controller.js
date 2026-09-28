@@ -28,7 +28,7 @@ export function logout(_req, res) {
 }
 
 export function me(req, res) {
-    res.json({ user: authService.toPublicUser(req.user) })
+    res.json({ user: req.user ? authService.toPublicUser(req.user) : null })
 }
 
 export async function forgotPassword(req, res) {

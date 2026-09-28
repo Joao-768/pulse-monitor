@@ -9,7 +9,7 @@ export interface UseChartPhaseOrchestratorOptions {
     skeletonData: Record<string, unknown>[]
     animationDuration: number
     yDomainTweenDuration: number
-    /** Signature of motion URL state — replays clip reveal in Studio. */
+    /** Signature of motion URL state, replays clip reveal in Studio. */
     revealSignature?: string
     /** Skip mount/signature enter reveal (static docs previews). */
     skipEnterReveal?: boolean
@@ -114,7 +114,7 @@ export function useChartPhaseOrchestrator({
         }
     }, [chartPhase, chartStatus, skeletonData, targetData])
 
-    /** Loading pulse exit finished — tween grid to ready spacing next. */
+    /** Loading pulse exit finished, tween grid to ready spacing next. */
     const notifyLoadingPulseComplete = useCallback(() => {
         if (phaseRef.current !== 'exiting') {
             return
@@ -122,7 +122,7 @@ export function useChartPhaseOrchestrator({
         setChartPhase('gridTweenReady')
     }, [])
 
-    /** Ready series conceal finished — tween grid to loading spacing next. */
+    /** Ready series conceal finished, tween grid to loading spacing next. */
     const notifyRevealConcealComplete = useCallback(() => {
         if (phaseRef.current !== 'exitingReady') {
             return
@@ -130,7 +130,7 @@ export function useChartPhaseOrchestrator({
         setChartPhase('gridTweenLoading')
     }, [])
 
-    /** Grid tween finished — enter the next resting phase. */
+    /** Grid tween finished, enter the next resting phase. */
     const notifyYDomainTweenComplete = useCallback(() => {
         if (phaseRef.current === 'gridTweenLoading') {
             setChartPhase('loading')

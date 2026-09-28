@@ -12,6 +12,10 @@ export const MONITORING = {
     // Checks running at the same time inside one process.
     concurrency: 20,
     userAgent: 'PulseMonitor/1.0 (+uptime check)',
+    // Reachability probes used to tell "the site is down" from "we are
+    // offline" (see monitoring/connectivity.js).
+    canaryHosts: ['cloudflare.com', 'google.com'],
+    canaryUrl: 'https://1.1.1.1/',
     // Daily retention sweep.
     retentionCron: '15 3 * * *',
 }

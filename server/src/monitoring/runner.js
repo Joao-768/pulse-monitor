@@ -1,8 +1,10 @@
 // Runs checks: HTTP request, then record the result. Knows nothing about
 // *when* checks run; the cron scheduler (or a future queue worker) decides.
 
+import { env } from '../config/env.js'
 import { MONITORING } from '../config/monitoring.js'
 import { logger } from '../utils/logger.js'
+import { checkerIsOnline, isNetworkLevelFailure } from './connectivity.js'
 import { performHttpCheck } from './http-check.js'
 import { recordCheckResult } from './record-result.js'
 
@@ -33,6 +35,14 @@ export async function runCheck({ id, url, isRetry = false }) {
             responseTime: result.responseTime,
             error: result.errorMessage,
         })
+        // Private targets (local development) do not depend on internet access.
+        if (
+            isNetworkLevelFailure(result) &&
+            !env.allowPrivateTargets &&
+            !(await checkerIsOnline())
+        ) {
+            return { discarded: 'checker-offline' }
+        }
         return await recordCheckResult({ monitorId: id, isRetry, checkedAt, result })
     } catch (error) {
         // Application error (database down, bug), not a monitored-site failure.

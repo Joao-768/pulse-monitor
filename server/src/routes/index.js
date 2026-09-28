@@ -5,8 +5,13 @@ import * as authController from '../controllers/auth.controller.js'
 import * as incidentController from '../controllers/incident.controller.js'
 import * as monitorController from '../controllers/monitor.controller.js'
 import * as notificationController from '../controllers/notification.controller.js'
-import { requireAuth } from '../middleware/auth.js'
-import { loginLimiter, registerLimiter, resetLimiter } from '../middleware/security.js'
+import { optionalAuth, requireAuth } from '../middleware/auth.js'
+import {
+    forgotLimiter,
+    loginLimiter,
+    registerLimiter,
+    resetLimiter,
+} from '../middleware/security.js'
 
 // Public ------------------------------------------------------------------
 
@@ -27,8 +32,9 @@ const auth = Router()
 auth.post('/register', registerLimiter, authController.register)
 auth.post('/login', loginLimiter, authController.login)
 auth.post('/logout', authController.logout)
-auth.get('/me', requireAuth, authController.me)
-auth.post('/forgot-password', resetLimiter, authController.forgotPassword)
+// Answers { user: null } for visitors instead of 401, so public pages can ask.
+auth.get('/me', optionalAuth, authController.me)
+auth.post('/forgot-password', forgotLimiter, authController.forgotPassword)
 auth.get('/reset-password/validate', resetLimiter, authController.checkResetToken)
 auth.post('/reset-password', resetLimiter, authController.resetPassword)
 

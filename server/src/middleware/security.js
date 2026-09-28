@@ -36,5 +36,8 @@ export const registerLimiter = limiter(
     10,
     'Too many sign-ups from this network. Try again later.',
 )
-export const resetLimiter = limiter(60, 8, 'Too many reset requests. Try again later.')
+// Sending reset emails is the abusable part, so it gets the tight limit.
+export const forgotLimiter = limiter(60, 8, 'Too many reset requests. Try again later.')
+// Tokens carry 256 bits of entropy; this only stops floods.
+export const resetLimiter = limiter(15, 30, 'Too many attempts. Try again in a few minutes.')
 export const apiLimiter = limiter(1, 300, 'Too many requests. Slow down and try again.')

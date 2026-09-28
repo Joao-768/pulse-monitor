@@ -45,7 +45,9 @@ export function createApp() {
     // so the session cookie stays first-party.
     if (env.serveClient && existsSync(clientDist)) {
         app.use(express.static(clientDist, { index: false, maxAge: '1h' }))
-        app.get(/^(?!\/api).*/, (_req, res) => {
+        // Client routes fall back to index.html; missing files (anything with
+        // an extension) stay a 404.
+        app.get(/^(?!\/api)(?!.*\.[a-z0-9]+$).*/i, (_req, res) => {
             res.sendFile(path.join(clientDist, 'index.html'))
         })
     }
