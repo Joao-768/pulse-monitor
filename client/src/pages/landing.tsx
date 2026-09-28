@@ -184,9 +184,14 @@ export function LandingPage() {
                                     is downtime that happened.
                                 </p>
                             </div>
-                            <ol className="relative space-y-0 border-l border-ink/80">
+                            <ol className="relative ml-[13px]">
                                 {STEPS.map((step, index) => (
-                                    <li key={step.title} className="relative pb-8 pl-8 last:pb-0">
+                                    <li
+                                        key={step.title}
+                                        // The connector runs from this circle's centre to the next one's,
+                                        // so nothing sticks out above the first step or below the last.
+                                        className="relative pb-8 pl-8 before:absolute before:top-[15px] before:-bottom-[15px] before:left-[-0.5px] before:w-px before:bg-ink/80 last:pb-0 last:before:hidden"
+                                    >
                                         <span className="absolute top-0.5 -left-[13px] flex h-[26px] w-[26px] items-center justify-center rounded-full border border-ink/80 bg-paper font-mono text-[11px]">
                                             {index + 1}
                                         </span>
