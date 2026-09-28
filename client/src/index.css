@@ -276,7 +276,47 @@
     }
 }
 
+/* Landing hero trace (components/hero-trace.tsx). */
+.trace-reveal {
+    transform-box: view-box;
+    transform-origin: 0 0;
+    transform: scaleX(0);
+    animation: trace-sweep linear forwards;
+}
+
+.trace-note {
+    opacity: 0;
+    animation: trace-note 400ms ease-out forwards;
+}
+
+@keyframes trace-sweep {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes trace-note {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
+    .trace-reveal {
+        transform: none;
+        animation: none;
+    }
+
+    .trace-note {
+        opacity: 1;
+        animation: none;
+    }
+
     *,
     *::before,
     *::after {

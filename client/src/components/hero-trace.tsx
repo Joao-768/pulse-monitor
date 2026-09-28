@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { cn } from '@/lib/utils'
 
 // The landing page's signature: a strip-chart trace that tells the product's
@@ -43,20 +44,22 @@ const before = beats(0, FAIL_X, [96, 108, 90, 102, 158, 99, 94])
 const down = `M${FAIL_X} ${BASE} L${RECOVER_X} ${BASE}`
 const after = beats(RECOVER_X, WIDTH, [101, 93, 104, 97])
 
-// Stages share one clock so the annotations appear as the pen reaches them.
+// The pen sweeps left to right; annotations appear as it reaches them.
 const DRAW_MS = 3600
 const at = (x: number) => Math.round((x / WIDTH) * DRAW_MS)
 
+// Annotations live in their own bands above and below the trace, so a tall
+// beat can never run into the text.
 function Note({
     x,
-    top,
+    band,
     tone,
     time,
     children,
     className,
 }: {
     x: number
-    top: string
+    band: 'top' | 'bottom'
     tone: 'ink' | 'down' | 'up' | 'pending'
     time: string
     children: React.ReactNode
@@ -72,10 +75,11 @@ function Note({
         <div
             className={cn(
                 'trace-note absolute border-l pl-2 font-mono text-[11px] leading-snug',
+                band === 'top' ? 'top-0' : 'bottom-0',
                 color,
                 className,
             )}
-            style={{ left: `${(x / WIDTH) * 100}%`, top, animationDelay: `${at(x)}ms` }}
+            style={{ left: `${(x / WIDTH) * 100}%`, animationDelay: `${at(x)}ms` }}
         >
             <div className="text-ink-3">{time}</div>
             <div className="font-medium whitespace-nowrap">{children}</div>
@@ -84,100 +88,94 @@ function Note({
 }
 
 export function HeroTrace() {
+    const clipId = `trace-reveal-${useId().replace(/:/g, '')}`
+
     return (
-        <div className="relative h-full min-h-[200px] w-full">
-            <style>{`
-                .trace-path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trace-draw linear forwards; }
-                .trace-note { opacity: 0; animation: trace-note 400ms ease-out forwards; }
-                @keyframes trace-draw { to { stroke-dashoffset: 0; } }
-                @keyframes trace-note { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-                @media (prefers-reduced-motion: reduce) {
-                    .trace-path { stroke-dashoffset: 0; animation: none; }
-                    .trace-note { opacity: 1; animation: none; }
-                }
-            `}</style>
+        <div className="relative h-full min-h-[260px] w-full">
             <svg
                 viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
                 preserveAspectRatio="none"
-                className="absolute inset-0 h-full w-full overflow-visible"
+                className="absolute inset-x-0 top-12 bottom-12 h-[calc(100%-6rem)] w-full overflow-visible"
                 role="img"
                 aria-label="A monitor's response trace: steady checks, a failed check, a failed retry, a stretch of downtime, then recovery."
             >
-                <rect
-                    x={FAIL_X}
-                    y="0"
-                    width={RECOVER_X - FAIL_X}
-                    height={HEIGHT}
-                    fill="var(--down)"
-                    opacity="0.06"
-                />
-                <path
-                    d={before}
-                    pathLength={1}
-                    className="trace-path"
-                    style={{ animationDuration: `${at(FAIL_X)}ms` }}
-                    fill="none"
-                    stroke="var(--ink)"
-                    strokeWidth="2.2"
-                    strokeLinejoin="round"
-                    vectorEffect="non-scaling-stroke"
-                />
-                <path
-                    d={down}
-                    pathLength={1}
-                    className="trace-path"
-                    style={{
-                        animationDuration: `${at(RECOVER_X - FAIL_X)}ms`,
-                        animationDelay: `${at(FAIL_X)}ms`,
-                    }}
-                    fill="none"
-                    stroke="var(--down)"
-                    strokeWidth="2.6"
-                    vectorEffect="non-scaling-stroke"
-                />
-                <path
-                    d={after}
-                    pathLength={1}
-                    className="trace-path"
-                    style={{
-                        animationDuration: `${at(WIDTH - RECOVER_X)}ms`,
-                        animationDelay: `${at(RECOVER_X)}ms`,
-                    }}
-                    fill="none"
-                    stroke="var(--ink)"
-                    strokeWidth="2.2"
-                    strokeLinejoin="round"
-                    vectorEffect="non-scaling-stroke"
-                />
+                <defs>
+                    {/* One clip rectangle grows from the left: it reveals the
+                        trace, the red stretch and the band in sync. */}
+                    <clipPath id={clipId}>
+                        <rect
+                            className="trace-reveal"
+                            x="0"
+                            y={-HEIGHT}
+                            width={WIDTH}
+                            height={HEIGHT * 3}
+                            style={{ animationDuration: `${DRAW_MS}ms` }}
+                        />
+                    </clipPath>
+                </defs>
+                <g clipPath={`url(#${clipId})`}>
+                    <rect
+                        x={FAIL_X}
+                        y={-24}
+                        width={RECOVER_X - FAIL_X}
+                        height={HEIGHT + 48}
+                        fill="var(--down)"
+                        opacity="0.07"
+                    />
+                    <path
+                        d={before}
+                        fill="none"
+                        stroke="var(--ink)"
+                        strokeWidth="2.2"
+                        strokeLinejoin="round"
+                        vectorEffect="non-scaling-stroke"
+                    />
+                    <path
+                        d={down}
+                        fill="none"
+                        stroke="var(--down)"
+                        strokeWidth="2.6"
+                        vectorEffect="non-scaling-stroke"
+                    />
+                    <path
+                        d={after}
+                        fill="none"
+                        stroke="var(--ink)"
+                        strokeWidth="2.2"
+                        strokeLinejoin="round"
+                        vectorEffect="non-scaling-stroke"
+                    />
+                </g>
             </svg>
 
             <Note
                 x={4 * PERIOD + 32}
-                top="0%"
+                band="top"
                 tone="ink"
                 time="14:02:10"
                 className="hidden md:block"
             >
                 200 · 612 ms, a slow one
             </Note>
+            {/* On phones the retry note is hidden, so this one takes the top band. */}
             <Note
                 x={FAIL_X}
-                top="86%"
+                band="bottom"
                 tone="pending"
                 time="14:07:12"
-                className="max-sm:top-[4%]! max-sm:text-[10px]"
+                className="max-sm:top-0 max-sm:bottom-auto max-sm:text-[10px]"
             >
                 Timeout. Retrying in 15 s
             </Note>
-            <Note x={RETRY_X} top="8%" tone="down" time="14:07:27" className="hidden sm:block">
+            <Note x={RETRY_X} band="top" tone="down" time="14:07:27" className="hidden sm:block">
                 Retry failed · incident opened
             </Note>
             <Note
                 x={RECOVER_X}
-                top="86%"
+                band="bottom"
                 tone="up"
                 time="14:19:31"
-                className="max-sm:-translate-x-full max-sm:border-l-0 max-sm:border-r max-sm:pr-2 max-sm:pl-0 max-sm:text-right max-sm:text-[10px]"
+                className="max-sm:-translate-x-full max-sm:border-r max-sm:border-l-0 max-sm:pr-2 max-sm:pl-0 max-sm:text-right max-sm:text-[10px]"
             >
                 200 OK · back up after 12m 19s
             </Note>
