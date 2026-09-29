@@ -645,6 +645,10 @@ export function MonitorDetailPage() {
                             points={m.responseTime}
                             revealKey={period}
                             domain={[new Date(m.period.dataFrom), new Date(m.period.to)]}
+                            expectedSpacingSeconds={Math.max(
+                                m.period.bucketSeconds,
+                                user?.plan.checkIntervalSeconds ?? 0,
+                            )}
                         />
                     ) : (
                         <Skeleton className="aspect-[3/1]" />

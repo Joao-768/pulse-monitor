@@ -4,7 +4,7 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 import { useChart, useChartStable } from './chart-context'
-import { shortDateFmt } from './chart-formatters'
+import { axisDateFormatterForSpan, shortDateFmt } from './chart-formatters'
 import { DEFAULT_Y_DOMAIN_TWEEN_MS } from './chart-phase'
 import { LINE_LOADING_PULSE_EASE } from './line-loading-timing'
 
@@ -440,13 +440,15 @@ function buildDomainTicks({
     const endTime = endDate.getTime()
     const timeRange = endTime - startTime
     const tickCount = Math.max(2, numTicks)
+    // Pulse Monitor: times of day for short spans, dates for long ones.
+    const formatter = axisDateFormatterForSpan(timeRange)
     const seenLabels = new Set<string>()
     const ticks: AxisTick[] = []
 
     for (let i = 0; i < tickCount; i++) {
         const t = i / (tickCount - 1)
         const date = new Date(startTime + t * timeRange)
-        const label = shortDateFmt.format(date)
+        const label = formatter.format(date)
         if (seenLabels.has(label)) {
             continue
         }

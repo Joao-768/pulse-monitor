@@ -19,35 +19,73 @@ interface Point {
     failures?: number
 }
 
+type ChartRow = {
+    date: Date
+    avg: number | null
+    max: number | null
+    checks: number
+    failures: number
+} & Record<string, unknown>
+
 // Response time over the selected period (Bklit area chart). Buckets where
-// every check failed carry no response time and are left out of the line;
-// the availability strip above the chart shows those periods instead.
+// every check failed carry no response time. Where no successful check was
+// seen for longer than a few expected intervals (an outage, or the checker
+// being stopped), a null point is inserted so the line breaks instead of
+// drawing a smooth curve through time with no measurements.
 export function ResponseTimeChart({
     points,
     revealKey,
     domain,
+    expectedSpacingSeconds,
 }: {
     points: Point[]
     revealKey: string
     // Full period, so stretches without successful checks show as gaps at
     // their real position instead of the axis ending at the last data point.
     domain?: [Date, Date]
+    // Normal distance between points: the larger of the bucket size and the
+    // check interval. Omit to never break the line.
+    expectedSpacingSeconds?: number
 }) {
-    const data = useMemo(
-        () =>
-            points
-                .filter((point) => point.avg !== null)
-                .map((point) => ({
-                    date: new Date(point.at),
-                    avg: point.avg,
-                    max: point.max ?? point.avg,
-                    checks: point.checks ?? 0,
-                    failures: point.failures ?? 0,
-                })),
-        [points],
-    )
+    const data = useMemo(() => {
+        const measured = points.filter((point) => point.avg !== null)
+        const rows: ChartRow[] = []
+        const gapMs = expectedSpacingSeconds ? expectedSpacingSeconds * 2.5 * 1000 : Infinity
 
-    if (data.length < 2) {
+        measured.forEach((point, index) => {
+            const date = new Date(point.at)
+            const previous = measured[index - 1]
+            if (previous) {
+                const previousTime = new Date(previous.at).getTime()
+                if (date.getTime() - previousTime > gapMs) {
+                    rows.push({
+                        date: new Date((previousTime + date.getTime()) / 2),
+                        avg: null,
+                        max: null,
+                        checks: 0,
+                        failures: 0,
+                    })
+                }
+            }
+            rows.push({
+                date,
+                avg: point.avg,
+                max: point.max ?? point.avg,
+                checks: point.checks ?? 0,
+                failures: point.failures ?? 0,
+            })
+        })
+        return rows
+    }, [points, expectedSpacingSeconds])
+
+    const measuredCount = data.filter((row) => row.avg !== null).length
+
+    // One label per day for spans of a few days, so no day is skipped;
+    // six evenly spaced labels otherwise.
+    const spanDays = domain ? (domain[1].getTime() - domain[0].getTime()) / 86_400_000 : 0
+    const xTicks = spanDays > 1.5 && spanDays <= 10 ? Math.round(spanDays) + 1 : 6
+
+    if (measuredCount < 2) {
         return (
             <div className="graph-paper flex aspect-[3/1] items-center justify-center rounded-md border border-rule text-sm text-ink-3">
                 Not enough checks in this period to draw a trend yet.
@@ -74,9 +112,23 @@ export function ResponseTimeChart({
                 strokeWidth={1.5}
             />
             <YAxis numTicks={4} formatValue={(value) => formatMs(value)} />
-            <XAxis numTicks={6} />
+            <XAxis numTicks={xTicks} tickMode="domain" />
             <ChartTooltip
+                dotColor={(point) =>
+                    typeof point.avg === 'number'
+                        ? 'var(--chart-tooltip-foreground)'
+                        : 'transparent'
+                }
                 rows={(point) => {
+                    if (typeof point.avg !== 'number') {
+                        return [
+                            {
+                                color: 'var(--chart-tooltip-muted)',
+                                label: 'No successful checks',
+                                value: '–',
+                            },
+                        ]
+                    }
                     const rows = [
                         {
                             color: 'var(--chart-tooltip-foreground)',
