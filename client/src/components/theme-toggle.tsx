@@ -3,7 +3,7 @@ import { Monitor, Moon, Sun } from 'lucide-react'
 import { readThemeMode, setThemeMode, type ThemeMode } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
-const NEXT: Record<ThemeMode, ThemeMode> = { system: 'light', light: 'dark', dark: 'system' }
+const NEXT: Record<ThemeMode, ThemeMode> = { dark: 'light', light: 'system', system: 'dark' }
 const LABEL: Record<ThemeMode, string> = {
     system: 'Theme: follows your system',
     light: 'Theme: light',
@@ -11,7 +11,7 @@ const LABEL: Record<ThemeMode, string> = {
 }
 const ICON = { system: Monitor, light: Sun, dark: Moon }
 
-// One button that cycles system, light, dark. The title says the current mode.
+// One button that cycles dark, light and system. The title says the current mode.
 export function ThemeToggle({ onDark = false }: { onDark?: boolean }) {
     const [mode, setMode] = useState<ThemeMode>(readThemeMode)
     const Icon = ICON[mode]

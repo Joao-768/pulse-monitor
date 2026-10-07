@@ -2,10 +2,10 @@
 
 /*
  * Pulse Monitor tokens.
- * Cool instrument-panel greys, a deep ink, and status colours that mean one
- * thing each. The accent ("signal") is a neutral graphite, never a status
- * colour and never a hue: the only colours on screen are the status ones.
- * Charts and the logo are drawn in ink, like a strip-chart recorder.
+ * Black and white: pure black or white pages, neutral greys with no tint, and
+ * status colours that mean one thing each. The accent ("signal") is neutral
+ * too, so the only colours on screen are the status ones. Charts and the logo
+ * are drawn in ink, like a strip-chart recorder. Dark is the default.
  * The theme is set on <html data-theme> by /theme.js before first paint.
  *
  * Semantic roles:
@@ -18,19 +18,19 @@
 :root {
     color-scheme: light;
 
-    --ink: #0e1621;
-    --ink-2: #435061;
-    --ink-3: #6b7787;
-    --paper: #eef1f4;
+    --ink: #111111;
+    --ink-2: #4d4d4d;
+    --ink-3: #6e6e6e;
+    --paper: #ffffff;
     --surface: #ffffff;
-    --rule: #d9dfe6;
-    --rule-strong: #b9c3ce;
-    --grid: #e3e8ee;
+    --rule: #e5e5e5;
+    --rule-strong: #cccccc;
+    --grid: #ededed;
 
-    --signal: #2c3744;
+    --signal: #262626;
     --signal-fg: #ffffff;
-    --signal-soft: #e3e7ec;
-    --signal-text: #1b2430;
+    --signal-soft: #f0f0f0;
+    --signal-text: #171717;
 
     --up: #0f9960;
     --up-soft: #dcf3e8;
@@ -41,8 +41,8 @@
     --pending: #c98200;
     --pending-soft: #fbf0d6;
     --pending-text: #7a4f00;
-    --paused: #7c8896;
-    --paused-soft: #e7eaee;
+    --paused: #8a8a8a;
+    --paused-soft: #efefef;
 
     /* Solid destructive fill. White text on it passes AA in both themes. */
     --danger: #d93a3f;
@@ -50,15 +50,15 @@
     --danger-fg: #ffffff;
 
     /* Inverse neutral: toasts and other ink-on-paper flips. */
-    --primary: #0e1621;
-    --primary-hover: #1d2a3a;
+    --primary: #111111;
+    --primary-hover: #333333;
     --primary-fg: #ffffff;
-    /* The app masthead stays dark in both themes. */
-    --masthead: #0e1621;
+    /* The app masthead stays black in both themes. */
+    --masthead: #000000;
 
-    --paper-line: rgb(14 22 33 / 0.07);
-    --paper-line-fine: rgb(14 22 33 / 0.035);
-    --shadow: rgb(14 22 33 / 0.25);
+    --paper-line: rgb(0 0 0 / 0.06);
+    --paper-line-fine: rgb(0 0 0 / 0.03);
+    --shadow: rgb(0 0 0 / 0.2);
 
     --masthead-height: 56px;
 
@@ -85,9 +85,9 @@
     --chart-crosshair: var(--ink-2);
     --chart-grid: var(--grid);
     --chart-brush-border: var(--grid);
-    --chart-tooltip-background: rgb(14 22 33 / 0.94);
+    --chart-tooltip-background: rgb(17 17 17 / 0.94);
     --chart-tooltip-foreground: #ffffff;
-    --chart-tooltip-muted: #a9b4c2;
+    --chart-tooltip-muted: #a3a3a3;
     --chart-marker-background: var(--paper);
     --chart-marker-border: var(--rule-strong);
     --chart-marker-foreground: var(--ink-2);
@@ -95,26 +95,26 @@
 }
 
 /*
- * Dark: the same instrument panel with the lights off. Surfaces step up in
- * lightness (paper < surface < rules); status colours are lifted so they
- * keep their contrast on dark, and their "soft" fills become deep tints.
+ * Dark (the default): black page, surfaces step up in lightness
+ * (paper < surface < rules); status colours are lifted so they keep their
+ * contrast on black, and their "soft" fills become deep tints.
  */
 :root[data-theme='dark'] {
     color-scheme: dark;
 
-    --ink: #e6ebf1;
-    --ink-2: #aab4c1;
-    --ink-3: #7f8a99;
-    --paper: #0a0f15;
-    --surface: #111822;
-    --rule: #212b37;
-    --rule-strong: #334152;
-    --grid: #202a36;
+    --ink: #ededed;
+    --ink-2: #a3a3a3;
+    --ink-3: #7c7c7c;
+    --paper: #000000;
+    --surface: #0b0b0b;
+    --rule: #1f1f1f;
+    --rule-strong: #333333;
+    --grid: #1c1c1c;
 
-    --signal: #c7d0da;
-    --signal-fg: #0a0f15;
-    --signal-soft: #1b232e;
-    --signal-text: #dde3ea;
+    --signal: #d4d4d4;
+    --signal-fg: #000000;
+    --signal-soft: #1a1a1a;
+    --signal-text: #e5e5e5;
 
     --up: #2fbf7f;
     --up-soft: #0f2a1f;
@@ -125,22 +125,22 @@
     --pending: #e3a21a;
     --pending-soft: #2f2410;
     --pending-text: #f5c96a;
-    --paused: #8793a2;
-    --paused-soft: #1c2430;
+    --paused: #8a8a8a;
+    --paused-soft: #1a1a1a;
 
-    --primary: #e6ebf1;
-    --primary-hover: #c9d2dc;
-    --primary-fg: #0a0f15;
-    --masthead: #060a0f;
+    --primary: #ededed;
+    --primary-hover: #ffffff;
+    --primary-fg: #000000;
+    --masthead: #000000;
 
     --danger: #d93a3f;
     --danger-hover: #e5484d;
 
-    --paper-line: rgb(230 235 241 / 0.06);
-    --paper-line-fine: rgb(230 235 241 / 0.028);
-    --shadow: rgb(0 0 0 / 0.6);
+    --paper-line: rgb(255 255 255 / 0.055);
+    --paper-line-fine: rgb(255 255 255 / 0.025);
+    --shadow: rgb(0 0 0 / 0.7);
 
-    --chart-tooltip-background: rgb(30 39 51 / 0.96);
+    --chart-tooltip-background: rgb(28 28 28 / 0.96);
     --chart-marker-background: var(--surface);
 }
 

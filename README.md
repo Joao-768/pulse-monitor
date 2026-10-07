@@ -436,28 +436,26 @@ Emails are used only for password reset. Incident alerts are in-app notification
 
 ## Themes
 
-Light, dark and system themes, chosen with the toggle in every header (it cycles system, light,
-dark; its label says the current mode).
+Dark by default, with light and system as choices: the toggle in every header cycles dark, light
+and system, and its label says the current mode.
 
 - **No flash.** `client/public/theme.js` runs synchronously in `<head>` before the first paint,
   reads the saved choice from `localStorage` (`pm-theme`) and sets `<html data-theme>`. It is a
   file rather than an inline script because the Content-Security-Policy forbids inline scripts.
 - **System** follows `prefers-color-scheme` and keeps following it when the OS setting changes.
-  Choosing system removes the saved value.
+  With nothing saved, the app is dark.
 - **Tokens.** Every colour is a CSS variable in `client/src/index.css`, defined once for light and
   once for dark, and exposed to Tailwind through `@theme`. Components use the roles, never raw
   colours: `paper` (page), `surface` (cards, inputs), `ink`, `ink-2`, `ink-3` (text), `rule`,
-  `rule-strong` (borders), `signal` (brand), `up`, `pending`, `down`, `paused` (status) and
+  `rule-strong` (borders), `signal` (neutral accent), `up`, `pending`, `down`, `paused` (status) and
   `danger` (solid destructive fills). Tailwind's `dark:` variant is bound to `data-theme`, so it
   follows the chosen theme rather than only the OS.
-- **Identity.** The brand colour is signal blue (`#3346d3`, lifted to `#8492ff` on dark). It is
-  used for what you act on or what is selected: primary buttons, the active tab, selected
-  segments, focus rings, the response-time trace, the logo and the graph-paper grid. It is never
-  used for a status. Status colours keep one meaning each in both themes: green up, red down,
-  amber checking or retrying, grey paused, and every status is also written out, never shown by
-  colour alone.
-- The app masthead stays dark in both themes, so the brand mark and active tab use a lighter
-  `signal-on-dark` there.
+- **Black and white.** Pure black pages in dark, white in light, and neutral greys with no tint.
+  Buttons, selected segments, charts and the logo are drawn in ink, like a strip-chart recorder.
+  The only hues on screen are the status colours, each with one meaning in both themes: green
+  up, red down, amber checking or retrying, grey paused. Every status is also written out, never
+  shown by colour alone.
+- The app masthead is black in both themes.
 
 ## Deploying to Render
 

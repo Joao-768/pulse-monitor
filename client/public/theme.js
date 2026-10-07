@@ -7,8 +7,10 @@
     } catch {
         mode = null
     }
+    // Dark unless the visitor chose light, or chose to follow the system.
     var dark =
-        mode === 'dark' ||
-        (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        mode === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+            : mode !== 'light'
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
 })()
