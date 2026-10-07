@@ -60,7 +60,7 @@ function PeriodPicker({
                     className={cn(
                         'h-8 min-w-12 rounded px-3 font-mono text-[13px] transition-colors',
                         value === period.key
-                            ? 'bg-signal text-signal-fg'
+                            ? 'bg-primary text-primary-fg'
                             : 'text-ink-2 hover:bg-paper',
                     )}
                 >
@@ -237,7 +237,7 @@ function ChecksTable({ monitorId, period }: { monitorId: string; period: PeriodK
                                 className={cn(
                                     'h-7 rounded px-2.5 text-[12px] font-medium',
                                     filter === item.key
-                                        ? 'bg-signal text-signal-fg'
+                                        ? 'bg-primary text-primary-fg'
                                         : 'text-ink-2 hover:bg-paper',
                                 )}
                             >

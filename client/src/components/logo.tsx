@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 // Wordmark: a single heartbeat trace, then the name. The trace is the same
-// shape as the favicon and carries the brand colour; the name is in ink.
+// shape as the favicon and is drawn in ink: white on dark, near-black on light.
 export function Logo({ inverted = false, className }: { inverted?: boolean; className?: string }) {
     return (
         <span className={cn('inline-flex items-center gap-2', className)}>
@@ -13,7 +13,7 @@ export function Logo({ inverted = false, className }: { inverted?: boolean; clas
                     strokeWidth="2.4"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className={inverted ? 'text-signal-on-dark' : 'text-signal'}
+                    className={inverted ? 'text-white' : 'text-ink'}
                 />
             </svg>
             <span

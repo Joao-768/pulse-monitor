@@ -18,7 +18,7 @@ function NavItem({ to, children, end }: { to: string; children: React.ReactNode;
                 cn(
                     'relative flex h-full items-center px-1 text-sm transition-colors',
                     isActive
-                        ? 'text-white after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-signal-on-dark'
+                        ? 'text-white after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-white'
                         : 'text-white/60 hover:text-white',
                 )
             }

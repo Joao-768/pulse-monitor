@@ -3,9 +3,9 @@
 /*
  * Pulse Monitor tokens.
  * Cool instrument-panel greys, a deep ink, and status colours that mean one
- * thing each. The brand colour is "signal" blue: it marks what you can act on
- * or what is selected (calls to action, the active tab, focus rings, the
- * response-time trace, the logo) and is never used for a status.
+ * thing each. The accent ("signal") is a neutral graphite, never a status
+ * colour and never a hue: the only colours on screen are the status ones.
+ * Charts and the logo are drawn in ink, like a strip-chart recorder.
  * The theme is set on <html data-theme> by /theme.js before first paint.
  *
  * Semantic roles:
@@ -27,13 +27,10 @@
     --rule-strong: #b9c3ce;
     --grid: #e3e8ee;
 
-    --signal: #3346d3;
-    --signal-hover: #2838b8;
+    --signal: #2c3744;
     --signal-fg: #ffffff;
-    --signal-soft: #e6e9fb;
-    --signal-text: #1f2d99;
-    /* The brand on the always-dark masthead. */
-    --signal-on-dark: #8f9cff;
+    --signal-soft: #e3e7ec;
+    --signal-text: #1b2430;
 
     --up: #0f9960;
     --up-soft: #dcf3e8;
@@ -59,8 +56,8 @@
     /* The app masthead stays dark in both themes. */
     --masthead: #0e1621;
 
-    --paper-line: rgb(51 70 211 / 0.07);
-    --paper-line-fine: rgb(51 70 211 / 0.032);
+    --paper-line: rgb(14 22 33 / 0.07);
+    --paper-line-fine: rgb(14 22 33 / 0.035);
     --shadow: rgb(14 22 33 / 0.25);
 
     --masthead-height: 56px;
@@ -68,7 +65,7 @@
     /* Bklit chart variables, mapped onto the palette. */
     --foreground: var(--ink);
     --muted-foreground: var(--ink-3);
-    --chart-1: var(--signal);
+    --chart-1: var(--ink);
     --chart-2: var(--ink-3);
     --chart-3: var(--down);
     --chart-4: var(--up);
@@ -76,13 +73,13 @@
     --chart-background: var(--surface);
     --chart-foreground: var(--ink);
     --chart-foreground-muted: var(--ink-3);
-    /* The response-time trace is drawn in the brand colour. */
-    --chart-line-primary: var(--signal);
+    /* Charts draw in ink, like a strip-chart recorder. */
+    --chart-line-primary: var(--ink);
     --chart-line-secondary: var(--ink-3);
-    --chart-indicator-color: var(--signal);
+    --chart-indicator-color: var(--ink);
     --chart-indicator-secondary-color: var(--ink-3);
     --chart-segment-background: var(--signal-soft);
-    --chart-segment-line: var(--signal);
+    --chart-segment-line: var(--ink-2);
     --chart-marker-badge-background: var(--primary);
     --chart-marker-badge-foreground: var(--primary-fg);
     --chart-crosshair: var(--ink-2);
@@ -114,11 +111,10 @@
     --rule-strong: #334152;
     --grid: #202a36;
 
-    --signal: #8492ff;
-    --signal-hover: #a0abff;
-    --signal-fg: #0a0f2e;
-    --signal-soft: #1b2150;
-    --signal-text: #b7bfff;
+    --signal: #c7d0da;
+    --signal-fg: #0a0f15;
+    --signal-soft: #1b232e;
+    --signal-text: #dde3ea;
 
     --up: #2fbf7f;
     --up-soft: #0f2a1f;
@@ -140,8 +136,8 @@
     --danger: #d93a3f;
     --danger-hover: #e5484d;
 
-    --paper-line: rgb(132 146 255 / 0.075);
-    --paper-line-fine: rgb(132 146 255 / 0.035);
+    --paper-line: rgb(230 235 241 / 0.06);
+    --paper-line-fine: rgb(230 235 241 / 0.028);
     --shadow: rgb(0 0 0 / 0.6);
 
     --chart-tooltip-background: rgb(30 39 51 / 0.96);
@@ -164,11 +160,9 @@
     --color-rule-strong: var(--rule-strong);
     --color-grid: var(--grid);
     --color-signal: var(--signal);
-    --color-signal-hover: var(--signal-hover);
     --color-signal-fg: var(--signal-fg);
     --color-signal-soft: var(--signal-soft);
     --color-signal-text: var(--signal-text);
-    --color-signal-on-dark: var(--signal-on-dark);
     --color-danger: var(--danger);
     --color-danger-hover: var(--danger-hover);
     --color-danger-fg: var(--danger-fg);

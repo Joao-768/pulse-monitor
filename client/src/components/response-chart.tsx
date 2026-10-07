@@ -110,9 +110,9 @@ export function ResponseTimeChart({
             <Grid horizontal numTicksRows={4} />
             <Area
                 dataKey="avg"
-                fill="var(--chart-line-primary)"
-                stroke="var(--chart-line-primary)"
-                fillOpacity={0.12}
+                fill="var(--ink)"
+                stroke="var(--ink)"
+                fillOpacity={0.1}
                 strokeWidth={1.5}
             />
             <YAxis numTicks={4} formatValue={(value) => formatMs(value)} />
@@ -187,12 +187,7 @@ export function ResponseSparkline({ points }: { points: { at: string; avg: numbe
                 margin={{ top: 3, right: 2, bottom: 3, left: 2 }}
                 animationDuration={500}
             >
-                <Line
-                    dataKey="avg"
-                    strokeWidth={1.5}
-                    stroke="var(--chart-line-primary)"
-                    showHighlight={false}
-                />
+                <Line dataKey="avg" strokeWidth={1.5} stroke="var(--ink-2)" showHighlight={false} />
             </LineChart>
         </div>
     )
