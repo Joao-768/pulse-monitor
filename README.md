@@ -5,10 +5,33 @@ schedule, confirms every failure with a retry, opens an incident when the servic
 closes it on recovery, and keeps the whole record: uptime, downtime, response time, every check and
 every incident.
 
-This repository is the **reference implementation** of the V1: a complete, working product meant to
-be run, explored and used as the target for a from-scratch build. Everything is real. Checks are
-real HTTP requests made with Node's native `fetch`, all data lives in PostgreSQL, and the scheduler
-runs on the server whether or not anyone has the app open.
+Everything is real. Checks are HTTP requests made with Node's native `fetch`, all data lives in
+PostgreSQL, and the scheduler runs on the server whether or not anyone has the app open.
+
+![Dashboard: six monitors with 24-hour availability strips, response times and uptime](docs/screenshots/dashboard.png)
+
+| Monitor page (dark, the default)                                                                                                         | Light theme                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| ![Monitor page over 30 days: uptime, downtime, response stats, availability strip and response-time chart](docs/screenshots/monitor.png) | ![The same monitor page over 7 days in the light theme](docs/screenshots/monitor-light.png) |
+
+**Highlights**
+
+- One retry before anything is called down, so a dropped packet is a logged blip, not an incident.
+- Uptime and downtime are computed from incidents and pause intervals for any period, never
+  stored, and paused time counts as neither.
+- A state machine with one locked transaction per check result; scheduling claims due monitors
+  with `FOR UPDATE SKIP LOCKED`, so several scheduler processes can share the work.
+- SSRF protection on every request and redirect hop, scrypt passwords, httpOnly session cookies,
+  CSRF origin checks, rate limits, and CSV exports safe from formula injection.
+- Plan limits (monitors, check interval, history kept) enforced by the backend from one source.
+- 27 tests, including an integration suite against PostgreSQL and a local HTTP server.
+
+**Demo account.** `npm run db:seed` creates `demo@pulsemonitor.dev` / `pulse-demo-2026` with six
+monitors on real public URLs and 30 days of generated history. It runs on the Pro plan, so a paid
+plan can be seen working (checks every minute, 90 days of history) even though Pro and Business are
+not on sale: there are no payments in V1.
+
+![Landing page: the hero trace shows steady checks, a failed check, a failed retry, downtime and recovery](docs/screenshots/landing.png)
 
 ## Contents
 
