@@ -12,6 +12,7 @@ const { performHttpCheck } = await import('../src/monitoring/http-check.js')
 const { recordCheckResult } = await import('../src/monitoring/record-result.js')
 const monitorService = await import('../src/services/monitor.service.js')
 const authService = await import('../src/services/auth.service.js')
+const { runRetention } = await import('../src/jobs/retention.js')
 
 let server
 let baseUrl
@@ -156,6 +157,90 @@ describe('monitor lifecycle', () => {
         ])
         assert.equal(pauses.rows.length, 1)
         assert.ok(pauses.rows[0].resumed_at)
+
+        // A check that started before the resume must not decide the new state.
+        const stale = await recordCheckResult({
+            monitorId: created.id,
+            isRetry: false,
+            checkedAt: new Date(Date.now() - 60_000),
+            result: {
+                success: false,
+                statusCode: 503,
+                responseTime: 5,
+                errorType: 'HTTP_5XX',
+                errorMessage: 'HTTP 503 Service Unavailable',
+            },
+        })
+        assert.equal(stale.discarded, 'stale')
+    })
+
+    test('deleting a monitor removes its history; the same URL starts fresh', async () => {
+        mode = 'ok'
+        const url = `${baseUrl}/ok?delete-test`
+        const first = await monitorService.createMonitor(user.id, { name: 'Doomed', url })
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        mode = 'down'
+        await check(first.id, false, url)
+        await check(first.id, true, url)
+        await monitorService.pauseMonitor(user.id, first.id)
+
+        const counts = async (monitorId) => {
+            const { rows } = await query(
+                `SELECT
+                    (SELECT count(*) FROM checks WHERE monitor_id = $1)::int AS checks,
+                    (SELECT count(*) FROM incidents WHERE monitor_id = $1)::int AS incidents,
+                    (SELECT count(*) FROM monitor_pauses WHERE monitor_id = $1)::int AS pauses,
+                    (SELECT count(*) FROM notifications WHERE monitor_id = $1)::int AS notifications`,
+                [monitorId],
+            )
+            return rows[0]
+        }
+        const before = await counts(first.id)
+        assert.ok(before.checks >= 3 && before.incidents === 1 && before.pauses === 1)
+        assert.equal(before.notifications, 1)
+
+        await monitorService.deleteMonitor(user.id, first.id)
+        assert.deepEqual(await counts(first.id), {
+            checks: 0,
+            incidents: 0,
+            pauses: 0,
+            notifications: 0,
+        })
+
+        mode = 'ok'
+        const again = await monitorService.createMonitor(user.id, { name: 'Reborn', url })
+        assert.notEqual(again.id, first.id)
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        const fresh = await counts(again.id)
+        assert.equal(fresh.incidents, 0)
+        assert.equal(fresh.checks, 1, 'only the immediate first check')
+        await monitorService.deleteMonitor(user.id, again.id)
+    })
+
+    test('retention deletes only history older than the plan keeps', async () => {
+        const { rows } = await query('SELECT id FROM monitors WHERE user_id = $1 LIMIT 1', [
+            user.id,
+        ])
+        const monitorId = rows[0].id
+        const day = 24 * 60 * 60 * 1000
+        const insert = (ageDays) =>
+            query(
+                `INSERT INTO checks (monitor_id, status, status_code, response_time, checked_at)
+                 VALUES ($1, 'SUCCESS', 200, 10, $2) RETURNING id`,
+                [monitorId, new Date(Date.now() - ageDays * day)],
+            )
+        const old = (await insert(8)).rows[0].id
+        const recent = (await insert(6)).rows[0].id
+
+        await runRetention()
+        const left = await query('SELECT id FROM checks WHERE id = ANY($1::bigint[])', [
+            [old, recent],
+        ])
+        assert.deepEqual(
+            left.rows.map((row) => row.id),
+            [recent],
+            'Free keeps 7 days: the 8-day-old check goes, the 6-day-old one stays',
+        )
     })
 
     test('plan limit is enforced', async () => {

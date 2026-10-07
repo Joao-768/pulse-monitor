@@ -54,9 +54,14 @@ export async function deleteForUser(id, userId) {
     return rowCount > 0
 }
 
+// Also returns when the monitor was last resumed, so results of checks that
+// started before a resume can be recognised as stale.
 export async function lockById(db, id) {
     const { rows } = await db.query(
-        `SELECT ${COLUMNS}, u.plan FROM monitors m JOIN users u ON u.id = m.user_id
+        `SELECT ${COLUMNS}, u.plan,
+            (SELECT max(p.resumed_at) FROM monitor_pauses p WHERE p.monitor_id = m.id)
+                AS last_resumed_at
+         FROM monitors m JOIN users u ON u.id = m.user_id
          WHERE m.id = $1 FOR UPDATE OF m`,
         [id],
     )

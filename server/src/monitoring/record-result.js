@@ -19,9 +19,12 @@ export async function recordCheckResult({ monitorId, isRetry, checkedAt, result 
         // Deleted or paused while the request was in flight: drop the result.
         if (!monitor) return { discarded: 'deleted' }
         if (monitor.status === 'PAUSED') return { discarded: 'paused' }
-        // A resume after this check started makes it stale: the fresh check
-        // triggered by the resume decides the state.
-        if (monitor.last_checked_at && monitor.last_checked_at > checkedAt) {
+        // A newer result, or a resume after this check started, makes it
+        // stale: the fresh check triggered by the resume decides the state.
+        if (
+            (monitor.last_checked_at && monitor.last_checked_at > checkedAt) ||
+            (monitor.last_resumed_at && monitor.last_resumed_at > checkedAt)
+        ) {
             return { discarded: 'stale' }
         }
 

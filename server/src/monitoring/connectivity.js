@@ -6,7 +6,7 @@
 // we confirm that the checker itself can reach the internet. If it cannot,
 // the result is discarded and the monitor keeps its state.
 
-import { lookup } from 'node:dns/promises'
+import { Resolver } from 'node:dns/promises'
 import { MONITORING } from '../config/monitoring.js'
 import { logger } from '../utils/logger.js'
 
@@ -22,10 +22,15 @@ const NETWORK_LEVEL = new Set([
 const CACHE_MS = 15_000
 let cached = null
 
+// A Resolver sends real DNS queries. dns.lookup() goes through the operating
+// system, which can answer from its cache while the network is gone, and that
+// made a sleeping laptop look online.
+const resolver = new Resolver({ timeout: 3000, tries: 1 })
+
 async function probe() {
-    // Online if either DNS resolution or a direct request to a well-known
+    // Online if either a fresh DNS query or a direct request to a well-known
     // address works. Two independent paths avoid false "offline" verdicts.
-    const dnsProbe = Promise.any(MONITORING.canaryHosts.map((host) => lookup(host)))
+    const dnsProbe = Promise.any(MONITORING.canaryHosts.map((host) => resolver.resolve4(host)))
     const httpProbe = fetch(MONITORING.canaryUrl, {
         method: 'HEAD',
         signal: AbortSignal.timeout(4000),
