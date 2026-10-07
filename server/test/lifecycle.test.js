@@ -13,6 +13,10 @@ const { recordCheckResult } = await import('../src/monitoring/record-result.js')
 const monitorService = await import('../src/services/monitor.service.js')
 const authService = await import('../src/services/auth.service.js')
 const { runRetention } = await import('../src/jobs/retention.js')
+const passwordResetRepository = await import('../src/repositories/password-reset.repository.js')
+const { createSessionToken, verifySessionToken } =
+    await import('../src/services/session.service.js')
+const { createHash } = await import('node:crypto')
 
 let server
 let baseUrl
@@ -268,6 +272,52 @@ describe('monitor lifecycle', () => {
         await assert.rejects(
             monitorService.getOwnedMonitor(stranger, rows[0].id),
             (error) => error.status === 404,
+        )
+    })
+})
+
+describe('password reset', () => {
+    test('a reset link works once, sets the password and ends older sessions', async () => {
+        // Unknown emails get the same silent success as known ones.
+        await authService.requestPasswordReset({ email: 'nobody-here@example.com' })
+
+        const oldSession = createSessionToken(user)
+        const token = 'reset-token-for-the-lifecycle-test-0123456789'
+        await passwordResetRepository.create({
+            userId: user.id,
+            tokenHash: createHash('sha256').update(token).digest('hex'),
+            expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+        })
+        assert.equal(await authService.isResetTokenUsable(token), true)
+
+        // Session times are in whole seconds: let one pass so the old session
+        // is strictly older than the password change.
+        await new Promise((resolve) => setTimeout(resolve, 1100))
+        await authService.resetPassword({ token, password: 'a-brand-new-password' })
+
+        const loggedIn = await authService.login({
+            email: 'lifecycle-test@example.com',
+            password: 'a-brand-new-password',
+        })
+        assert.equal(loggedIn.id, user.id)
+        await assert.rejects(
+            authService.login({ email: 'lifecycle-test@example.com', password: 'test-password-1' }),
+            (error) => error.code === 'INVALID_CREDENTIALS',
+        )
+
+        assert.equal(await authService.isResetTokenUsable(token), false, 'single use')
+        await assert.rejects(
+            authService.resetPassword({ token, password: 'yet-another-password' }),
+            (error) => error.code === 'INVALID_TOKEN',
+        )
+
+        const { rows } = await query('SELECT password_changed_at FROM users WHERE id = $1', [
+            user.id,
+        ])
+        const changedAt = Math.floor(new Date(rows[0].password_changed_at).getTime() / 1000)
+        assert.ok(
+            verifySessionToken(oldSession).iat < changedAt,
+            'sessions from before the reset are rejected by requireAuth',
         )
     })
 })
