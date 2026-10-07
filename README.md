@@ -24,6 +24,7 @@ runs on the server whether or not anyone has the app open.
 - [API](#api)
 - [Security](#security)
 - [Emails with Resend](#emails-with-resend)
+- [Themes](#themes)
 - [Deploying to Render](#deploying-to-render)
 - [Technical decisions](#technical-decisions)
 - [V1 limitations](#v1-limitations)
@@ -58,6 +59,13 @@ Run the tests (unit tests plus an integration suite against the database and a l
 
 ```bash
 npm test
+```
+
+Type-check, lint and build the client:
+
+```bash
+npm --prefix client run build   # tsc -b, then vite build
+npm --prefix client run lint    # oxlint
 ```
 
 ## Stack
@@ -129,11 +137,11 @@ pulse-monitor/
     ├── index.html
     └── src/
         ├── App.tsx           routes and code splitting
-        ├── auth/             session context and route guards
+        ├── auth/             session context, provider and route guards
         ├── pages/            landing, auth pages, dashboard, monitor detail, incidents, notifications
         ├── components/       UI kit, status strip, charts wrapper, dialogs, app shell, hero trace
         ├── components/charts Bklit chart components (installed from the registry, lightly adapted)
-        ├── hooks/            useApi (fetch + polling), useNow
+        ├── hooks/            useApi (fetch + polling), usePlans, useNow
         └── lib/              API client, types, formatting
 ```
 
@@ -260,11 +268,15 @@ that change with a deploy, and a `CHECK` constraint keeps the database in line w
    `TOO_MANY_REDIRECTS`, `BLOCKED` or `NETWORK`, and HTTP failures as `HTTP_4XX`, `HTTP_5XX`. A
    later version can add rules (expected status, keyword in the body, latency threshold) without
    touching the runner.
-5. **Connectivity guard** (`monitoring/connectivity.js`). Before a network-level failure is
-   recorded, the runner checks that the checker itself can reach the internet (DNS lookups and a
-   direct request to `1.1.1.1`, cached for 15 s). If the checker is offline, the result is dropped
-   instead of marking every monitor down. This was added after testing: a laptop waking from
-   sleep produced DNS failures for every monitor at once.
+5. **Connectivity guard** (`monitoring/connectivity.js`, `monitoring/runner.js`). Before a
+   network-level failure is recorded, the runner checks that the checker itself can reach the
+   internet: fresh DNS queries sent by a `dns.Resolver` (not `dns.lookup`, which can answer from
+   the operating system's cache while offline) and a direct request to `1.1.1.1`, cached for 15 s.
+   If the checker is offline, the result is dropped instead of marking every monitor down. A
+   network-level failure whose request took more than 1.5 times the timeout is dropped too: it
+   means the process was suspended mid-check (a host going to sleep), not that the target failed.
+   Both were added after testing on a laptop, where sleep produced DNS failures and timeouts for
+   every monitor at once.
 6. **Record result** (`monitoring/record-result.js`). One transaction that locks the monitor row,
    stores the check and applies the state machine.
 
@@ -291,6 +303,10 @@ that change with a deploy, and a `CHECK` constraint keeps the database in line w
   observing, so we stop counting downtime) and opens a `monitor_pauses` row. **Resume** sets
   `PENDING`, closes the pause row and checks immediately. History is untouched, and the monitor
   keeps its slot in the plan while paused.
+- A result from a check that started before the latest resume is discarded as stale, and if a
+  scheduled check is still running when a monitor is resumed, the immediate check runs as soon as
+  it finishes. A pause and resume in quick succession can never let an old result decide the
+  new state.
 
 ### Retention
 
@@ -300,7 +316,7 @@ that ended before it. Active incidents and open pauses are never deleted. Run it
 `npm run db:retention`.
 
 "All" in the UI means everything the plan still keeps. When a period reaches past the plan's
-retention (30 days on Free), the view starts at the retention limit and says so.
+retention (30 days on Free, which keeps 7), the view starts at the retention limit and says so.
 
 ## Uptime and downtime
 
@@ -418,6 +434,31 @@ log, while the user still gets the same generic response.
 
 Emails are used only for password reset. Incident alerts are in-app notifications in V1.
 
+## Themes
+
+Light, dark and system themes, chosen with the toggle in every header (it cycles system, light,
+dark; its label says the current mode).
+
+- **No flash.** `client/public/theme.js` runs synchronously in `<head>` before the first paint,
+  reads the saved choice from `localStorage` (`pm-theme`) and sets `<html data-theme>`. It is a
+  file rather than an inline script because the Content-Security-Policy forbids inline scripts.
+- **System** follows `prefers-color-scheme` and keeps following it when the OS setting changes.
+  Choosing system removes the saved value.
+- **Tokens.** Every colour is a CSS variable in `client/src/index.css`, defined once for light and
+  once for dark, and exposed to Tailwind through `@theme`. Components use the roles, never raw
+  colours: `paper` (page), `surface` (cards, inputs), `ink`, `ink-2`, `ink-3` (text), `rule`,
+  `rule-strong` (borders), `signal` (brand), `up`, `pending`, `down`, `paused` (status) and
+  `danger` (solid destructive fills). Tailwind's `dark:` variant is bound to `data-theme`, so it
+  follows the chosen theme rather than only the OS.
+- **Identity.** The brand colour is signal blue (`#3346d3`, lifted to `#8492ff` on dark). It is
+  used for what you act on or what is selected: primary buttons, the active tab, selected
+  segments, focus rings, the response-time trace, the logo and the graph-paper grid. It is never
+  used for a status. Status colours keep one meaning each in both themes: green up, red down,
+  amber checking or retrying, grey paused, and every status is also written out, never shown by
+  colour alone.
+- The app masthead stays dark in both themes, so the brand mark and active tab use a lighter
+  `signal-on-dark` there.
+
 ## Deploying to Render
 
 `render.yaml` describes a Blueprint: in the Render dashboard choose **New > Blueprint** and point it
@@ -454,14 +495,21 @@ service and add a Background Worker with the start command `npm --prefix server 
   "sign out everywhere" on reset without a new table. The trade-off: logout clears the cookie but
   cannot revoke a stolen token before it expires.
 - **Checks run from one region.** Enough for V1; see limitations.
-- **Bklit charts** are installed as source through the shadcn registry. Two local changes: axis
-  labels show the time of day for spans under 36 hours (the stock labels are day-only), and the
-  tooltip title includes the time.
-- **Light theme only.** The product is read at a glance in daylight hours; a dark theme was not
-  worth doubling the palette for V1.
+- **Bklit charts** are installed as source through the shadcn registry. Local changes: axis
+  labels show the time of day for spans under 36 hours (the stock labels are day-only), the
+  tooltip title includes the time, the line breaks at gaps in the data, and the tooltip's date
+  pill uses the theme tokens. The folder is excluded from `oxlint` (`client/.oxlintrc.json`):
+  it is third-party source, and keeping it close to upstream matters more than restyling it.
+- **Plan limits have one source.** `server/src/config/plans.js` is what the backend enforces and
+  what `GET /api/plans` returns; the pricing table, the sign-up page and the landing page read
+  that endpoint instead of repeating the numbers.
 
 ## V1 limitations
 
+- Downtime runs from the first failed check to the first successful one. If the checker itself
+  stops (the process is down or the host is asleep) while a monitor is down, that gap is counted
+  as downtime too, because nothing observed a recovery. On Render the process does not sleep;
+  on a laptop it does.
 - Checks are `GET` only, success means 2xx or 3xx, and there is no per-monitor configuration
   (method, headers, expected status, keyword, timeout). The rule list in `evaluate.js` is where
   that goes.

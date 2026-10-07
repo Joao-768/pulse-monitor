@@ -3,9 +3,17 @@
 /*
  * Pulse Monitor tokens.
  * Cool instrument-panel greys, a deep ink, and status colours that mean one
- * thing each. The accent ("signal") is a neutral graphite, never a status
- * colour and never a hue: the only colours on screen are the status ones.
+ * thing each. The brand colour is "signal" blue: it marks what you can act on
+ * or what is selected (calls to action, the active tab, focus rings, the
+ * response-time trace, the logo) and is never used for a status.
  * The theme is set on <html data-theme> by /theme.js before first paint.
+ *
+ * Semantic roles:
+ *   paper        page background        ink           primary text
+ *   surface      cards, panels, inputs  ink-2, ink-3  secondary, muted text
+ *   rule         borders                rule-strong   control borders
+ *   signal       brand / accent         up, pending, down, paused  status
+ *   danger       solid destructive fills (buttons, "ongoing" badges)
  */
 :root {
     color-scheme: light;
@@ -19,9 +27,13 @@
     --rule-strong: #b9c3ce;
     --grid: #e3e8ee;
 
-    --signal: #2c3744;
-    --signal-soft: #e3e7ec;
-    --signal-text: #1b2430;
+    --signal: #3346d3;
+    --signal-hover: #2838b8;
+    --signal-fg: #ffffff;
+    --signal-soft: #e6e9fb;
+    --signal-text: #1f2d99;
+    /* The brand on the always-dark masthead. */
+    --signal-on-dark: #8f9cff;
 
     --up: #0f9960;
     --up-soft: #dcf3e8;
@@ -35,22 +47,28 @@
     --paused: #7c8896;
     --paused-soft: #e7eaee;
 
-    /* Solid controls: primary buttons, selected segments, toasts. */
+    /* Solid destructive fill. White text on it passes AA in both themes. */
+    --danger: #d93a3f;
+    --danger-hover: #c22f34;
+    --danger-fg: #ffffff;
+
+    /* Inverse neutral: toasts and other ink-on-paper flips. */
     --primary: #0e1621;
     --primary-hover: #1d2a3a;
     --primary-fg: #ffffff;
     /* The app masthead stays dark in both themes. */
     --masthead: #0e1621;
 
-    --paper-line: rgb(14 22 33 / 0.07);
-    --paper-line-fine: rgb(14 22 33 / 0.035);
+    --paper-line: rgb(51 70 211 / 0.07);
+    --paper-line-fine: rgb(51 70 211 / 0.032);
     --shadow: rgb(14 22 33 / 0.25);
 
     --masthead-height: 56px;
 
     /* Bklit chart variables, mapped onto the palette. */
     --foreground: var(--ink);
-    --chart-1: var(--ink);
+    --muted-foreground: var(--ink-3);
+    --chart-1: var(--signal);
     --chart-2: var(--ink-3);
     --chart-3: var(--down);
     --chart-4: var(--up);
@@ -58,9 +76,15 @@
     --chart-background: var(--surface);
     --chart-foreground: var(--ink);
     --chart-foreground-muted: var(--ink-3);
-    /* Charts draw in ink, like a strip-chart recorder: never the brand colour. */
-    --chart-line-primary: var(--ink);
+    /* The response-time trace is drawn in the brand colour. */
+    --chart-line-primary: var(--signal);
     --chart-line-secondary: var(--ink-3);
+    --chart-indicator-color: var(--signal);
+    --chart-indicator-secondary-color: var(--ink-3);
+    --chart-segment-background: var(--signal-soft);
+    --chart-segment-line: var(--signal);
+    --chart-marker-badge-background: var(--primary);
+    --chart-marker-badge-foreground: var(--primary-fg);
     --chart-crosshair: var(--ink-2);
     --chart-grid: var(--grid);
     --chart-brush-border: var(--grid);
@@ -90,9 +114,11 @@
     --rule-strong: #334152;
     --grid: #202a36;
 
-    --signal: #c7d0da;
-    --signal-soft: #1b232e;
-    --signal-text: #dde3ea;
+    --signal: #8492ff;
+    --signal-hover: #a0abff;
+    --signal-fg: #0a0f2e;
+    --signal-soft: #1b2150;
+    --signal-text: #b7bfff;
 
     --up: #2fbf7f;
     --up-soft: #0f2a1f;
@@ -111,13 +137,19 @@
     --primary-fg: #0a0f15;
     --masthead: #060a0f;
 
-    --paper-line: rgb(230 235 241 / 0.06);
-    --paper-line-fine: rgb(230 235 241 / 0.028);
+    --danger: #d93a3f;
+    --danger-hover: #e5484d;
+
+    --paper-line: rgb(132 146 255 / 0.075);
+    --paper-line-fine: rgb(132 146 255 / 0.035);
     --shadow: rgb(0 0 0 / 0.6);
 
     --chart-tooltip-background: rgb(30 39 51 / 0.96);
     --chart-marker-background: var(--surface);
 }
+
+/* `dark:` utilities follow the chosen theme, not only the OS setting. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 @theme {
     --font-sans: 'Geologica', ui-sans-serif, system-ui, sans-serif;
@@ -132,8 +164,14 @@
     --color-rule-strong: var(--rule-strong);
     --color-grid: var(--grid);
     --color-signal: var(--signal);
+    --color-signal-hover: var(--signal-hover);
+    --color-signal-fg: var(--signal-fg);
     --color-signal-soft: var(--signal-soft);
     --color-signal-text: var(--signal-text);
+    --color-signal-on-dark: var(--signal-on-dark);
+    --color-danger: var(--danger);
+    --color-danger-hover: var(--danger-hover);
+    --color-danger-fg: var(--danger-fg);
     --color-up-text: var(--up-text);
     --color-down-text: var(--down-text);
     --color-pending-text: var(--pending-text);
@@ -173,7 +211,7 @@
 
     ::selection {
         background: var(--signal);
-        color: var(--primary-fg);
+        color: var(--signal-fg);
     }
 
     :focus-visible {

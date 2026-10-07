@@ -18,7 +18,7 @@ function NavItem({ to, children, end }: { to: string; children: React.ReactNode;
                 cn(
                     'relative flex h-full items-center px-1 text-sm transition-colors',
                     isActive
-                        ? 'text-white after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-white'
+                        ? 'text-white after:absolute after:inset-x-0 after:bottom-0 after:h-[2px] after:bg-signal-on-dark'
                         : 'text-white/60 hover:text-white',
                 )
             }
@@ -76,7 +76,7 @@ export function AppShell() {
                         <NavItem to="/app/notifications">
                             Notifications
                             {unreadCount > 0 ? (
-                                <span className="ml-1.5 rounded-full bg-down px-1.5 py-px font-mono text-[10px] font-semibold text-white">
+                                <span className="ml-1.5 rounded-full bg-danger px-1.5 py-px font-mono text-[10px] font-semibold text-danger-fg">
                                     {unreadCount > 99 ? '99+' : unreadCount}
                                 </span>
                             ) : null}

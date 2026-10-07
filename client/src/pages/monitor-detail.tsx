@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/auth-context'
 import { DeleteMonitorDialog, RenameMonitorDialog } from '@/components/monitor-dialogs'
 import { ResponseTimeChart } from '@/components/response-chart'
 import { StatusBadge, TimelineStrip } from '@/components/status'
-import { useToast } from '@/components/toast'
+import { useToast } from '@/components/toast-context'
 import { buttonClass } from '@/components/button-class'
 import { Alert, Button, Panel, PanelHeader, Skeleton } from '@/components/ui'
 import { useApi } from '@/hooks/use-api'
@@ -47,20 +47,20 @@ function PeriodPicker({
 }) {
     return (
         <div
-            role="radiogroup"
+            role="group"
             aria-label="Period"
             className="inline-flex rounded-md border border-rule-strong bg-surface p-0.5"
         >
             {PERIODS.map((period) => (
                 <button
                     key={period.key}
-                    role="radio"
-                    aria-checked={value === period.key}
+                    type="button"
+                    aria-pressed={value === period.key}
                     onClick={() => onChange(period.key)}
                     className={cn(
                         'h-8 min-w-12 rounded px-3 font-mono text-[13px] transition-colors',
                         value === period.key
-                            ? 'bg-primary text-primary-fg'
+                            ? 'bg-signal text-signal-fg'
                             : 'text-ink-2 hover:bg-paper',
                     )}
                 >
@@ -138,7 +138,7 @@ function StateBanner({ detail }: { detail: MonitorDetail }) {
 }
 
 function incidentLabel(incident: Incident) {
-    if (incident.active) return { text: 'Ongoing', className: 'bg-down text-white' }
+    if (incident.active) return { text: 'Ongoing', className: 'bg-danger text-danger-fg' }
     if (incident.resolution === 'PAUSED')
         return { text: 'Ended by pause', className: 'bg-paused-soft text-ink-2' }
     return { text: 'Resolved', className: 'bg-up-soft text-up-text' }
@@ -220,10 +220,15 @@ function ChecksTable({ monitorId, period }: { monitorId: string; period: PeriodK
                         : 'Every request, newest first'
                 }
                 actions={
-                    <div className="inline-flex rounded-md border border-rule-strong p-0.5">
+                    <div
+                        role="group"
+                        aria-label="Filter checks"
+                        className="inline-flex rounded-md border border-rule-strong p-0.5"
+                    >
                         {CHECK_FILTERS.map((item) => (
                             <button
                                 key={item.key}
+                                type="button"
                                 onClick={() => {
                                     setFilter(item.key)
                                     setPage(1)
@@ -232,7 +237,7 @@ function ChecksTable({ monitorId, period }: { monitorId: string; period: PeriodK
                                 className={cn(
                                     'h-7 rounded px-2.5 text-[12px] font-medium',
                                     filter === item.key
-                                        ? 'bg-primary text-primary-fg'
+                                        ? 'bg-signal text-signal-fg'
                                         : 'text-ink-2 hover:bg-paper',
                                 )}
                             >
@@ -516,6 +521,10 @@ export function MonitorDetailPage() {
                 </Alert>
             ) : null}
 
+            {metrics.error && !m ? (
+                <Alert>Metrics could not be loaded: {metrics.error.message}</Alert>
+            ) : null}
+
             {m ? (
                 <div
                     className={cn(
@@ -534,8 +543,8 @@ export function MonitorDetailPage() {
                         }
                         detail={
                             m.availability.pausedMs > 0
-                                ? `${formatDuration(m.availability.pausedMs)} paused, excluded`
-                                : 'of monitored time'
+                                ? `Paused ${formatDuration(m.availability.pausedMs)}, not counted`
+                                : 'Paused time: none'
                         }
                     />
                     <Stat
@@ -552,18 +561,16 @@ export function MonitorDetailPage() {
                         label="Avg response"
                         value={formatMs(m.checks.avgResponseTime)}
                         detail={
-                            m.checks.p95ResponseTime
+                            m.checks.p95ResponseTime !== null
                                 ? `p95 ${formatMs(m.checks.p95ResponseTime)}`
                                 : undefined
                         }
                     />
                     <Stat
                         label="Fastest / slowest"
-                        value={
-                            m.checks.minResponseTime ? `${formatMs(m.checks.minResponseTime)}` : '–'
-                        }
+                        value={formatMs(m.checks.minResponseTime)}
                         detail={
-                            m.checks.maxResponseTime
+                            m.checks.maxResponseTime !== null
                                 ? `slowest ${formatMs(m.checks.maxResponseTime)}`
                                 : undefined
                         }
@@ -586,7 +593,7 @@ export function MonitorDetailPage() {
                         }
                     />
                 </div>
-            ) : (
+            ) : metrics.error ? null : (
                 <Skeleton className="h-28" />
             )}
 
@@ -624,6 +631,8 @@ export function MonitorDetailPage() {
                                 ))}
                             </div>
                         </>
+                    ) : metrics.error ? (
+                        <p className="text-sm text-ink-3">Not available right now.</p>
                     ) : (
                         <Skeleton className="h-10" />
                     )}
@@ -650,6 +659,8 @@ export function MonitorDetailPage() {
                                 user?.plan.checkIntervalSeconds ?? 0,
                             )}
                         />
+                    ) : metrics.error ? (
+                        <p className="px-2 py-6 text-sm text-ink-3">Not available right now.</p>
                     ) : (
                         <Skeleton className="aspect-[3/1]" />
                     )}
@@ -664,6 +675,10 @@ export function MonitorDetailPage() {
                     />
                     {incidents.data ? (
                         <IncidentList incidents={incidents.data.items} />
+                    ) : incidents.error ? (
+                        <div className="p-5">
+                            <Alert>{incidents.error.message}</Alert>
+                        </div>
                     ) : (
                         <Skeleton className="m-5 h-24" />
                     )}
@@ -699,6 +714,10 @@ export function MonitorDetailPage() {
                                 No failed checks in this period.
                             </p>
                         )
+                    ) : metrics.error ? (
+                        <p className="px-5 py-8 text-center text-sm text-ink-3">
+                            Not available right now.
+                        </p>
                     ) : (
                         <Skeleton className="m-5 h-24" />
                     )}

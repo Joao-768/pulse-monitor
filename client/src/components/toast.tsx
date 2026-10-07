@@ -1,14 +1,12 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
+import { useCallback, useState, type ReactNode } from 'react'
+import { ToastContext, type Tone } from '@/components/toast-context'
 import { cn } from '@/lib/utils'
 
-type Tone = 'neutral' | 'error'
 interface Toast {
     id: number
     message: string
     tone: Tone
 }
-
-const ToastContext = createContext<((message: string, tone?: Tone) => void) | null>(null)
 
 let nextId = 1
 
@@ -37,14 +35,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         className={cn(
                             'pointer-events-auto flex items-center gap-3 rounded-md px-4 py-2.5 text-sm shadow-lg',
                             toast.tone === 'error'
-                                ? 'bg-down text-white'
+                                ? 'bg-danger text-danger-fg'
                                 : 'bg-primary text-primary-fg',
                         )}
                     >
                         <span
                             className={cn(
                                 'h-1.5 w-1.5 rounded-full',
-                                toast.tone === 'error' ? 'bg-white' : 'bg-up',
+                                toast.tone === 'error' ? 'bg-danger-fg' : 'bg-up',
                             )}
                         />
                         {toast.message}
@@ -53,10 +51,4 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             </div>
         </ToastContext.Provider>
     )
-}
-
-export function useToast() {
-    const context = useContext(ToastContext)
-    if (!context) throw new Error('useToast must be used inside ToastProvider')
-    return context
 }

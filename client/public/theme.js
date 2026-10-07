@@ -4,7 +4,7 @@
     var mode = null
     try {
         mode = localStorage.getItem('pm-theme')
-    } catch (error) {
+    } catch {
         mode = null
     }
     var dark =

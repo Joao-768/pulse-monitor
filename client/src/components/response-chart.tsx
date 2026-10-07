@@ -86,9 +86,13 @@ export function ResponseTimeChart({
     const xTicks = spanDays > 1.5 && spanDays <= 10 ? Math.round(spanDays) + 1 : 6
 
     if (measuredCount < 2) {
+        // Checks ran, but none (or one) succeeded: say so instead of "not enough data".
+        const ranChecks = points.some((point) => (point.checks ?? 0) > 0)
         return (
-            <div className="graph-paper flex aspect-[3/1] items-center justify-center rounded-md border border-rule text-sm text-ink-3">
-                Not enough checks in this period to draw a trend yet.
+            <div className="graph-paper flex aspect-[3/1] items-center justify-center rounded-md border border-rule px-6 text-center text-sm text-ink-3">
+                {ranChecks && measuredCount === 0
+                    ? 'No successful checks in this period, so there is no response time to plot.'
+                    : 'Not enough checks in this period to draw a trend yet.'}
             </div>
         )
     }
@@ -106,9 +110,9 @@ export function ResponseTimeChart({
             <Grid horizontal numTicksRows={4} />
             <Area
                 dataKey="avg"
-                fill="var(--ink)"
-                stroke="var(--ink)"
-                fillOpacity={0.1}
+                fill="var(--chart-line-primary)"
+                stroke="var(--chart-line-primary)"
+                fillOpacity={0.12}
                 strokeWidth={1.5}
             />
             <YAxis numTicks={4} formatValue={(value) => formatMs(value)} />
@@ -183,7 +187,12 @@ export function ResponseSparkline({ points }: { points: { at: string; avg: numbe
                 margin={{ top: 3, right: 2, bottom: 3, left: 2 }}
                 animationDuration={500}
             >
-                <Line dataKey="avg" strokeWidth={1.5} stroke="var(--ink-2)" showHighlight={false} />
+                <Line
+                    dataKey="avg"
+                    strokeWidth={1.5}
+                    stroke="var(--chart-line-primary)"
+                    showHighlight={false}
+                />
             </LineChart>
         </div>
     )

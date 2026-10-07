@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import { AuthProvider } from '@/auth/auth-context'
+import { AuthProvider } from '@/auth/auth-provider'
 import { GuestOnly, RequireAuth } from '@/auth/guards'
 import { AppShell } from '@/components/app-shell'
 import { Logo } from '@/components/logo'

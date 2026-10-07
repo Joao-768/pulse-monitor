@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { NOTIFICATIONS_CHANGED } from '@/components/app-shell'
-import { useToast } from '@/components/toast'
+import { useToast } from '@/components/toast-context'
 import { Alert, Button, Skeleton } from '@/components/ui'
 import { useApi } from '@/hooks/use-api'
 import { ApiError, api } from '@/lib/api'
@@ -22,10 +22,16 @@ export function NotificationsPage() {
         { pollMs: 20_000 },
     )
     const pages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1
+    const unread = data?.unread
 
     function announce() {
         window.dispatchEvent(new Event(NOTIFICATIONS_CHANGED))
     }
+
+    // A poll that brings in new notifications refreshes the header badge too.
+    useEffect(() => {
+        if (unread !== undefined) announce()
+    }, [unread])
 
     async function setRead(notification: Notification, isRead: boolean) {
         // Optimistic: flip it now, roll back if the request fails.
@@ -169,6 +175,7 @@ export function NotificationsPage() {
                                     <button
                                         type="button"
                                         onClick={() => setRead(notification, !notification.isRead)}
+                                        aria-label={`${notification.isRead ? 'Mark as unread' : 'Mark as read'}: ${notification.message}`}
                                         className="shrink-0 rounded px-2 py-1 text-[12px] text-ink-3 hover:bg-paper hover:text-ink"
                                     >
                                         {notification.isRead ? 'Mark unread' : 'Mark read'}

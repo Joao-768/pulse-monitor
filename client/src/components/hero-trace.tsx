@@ -125,7 +125,7 @@ export function HeroTrace() {
                     <path
                         d={before}
                         fill="none"
-                        stroke="var(--ink)"
+                        stroke="var(--signal)"
                         strokeWidth="2.2"
                         strokeLinejoin="round"
                         vectorEffect="non-scaling-stroke"
@@ -140,7 +140,7 @@ export function HeroTrace() {
                     <path
                         d={after}
                         fill="none"
-                        stroke="var(--ink)"
+                        stroke="var(--signal)"
                         strokeWidth="2.2"
                         strokeLinejoin="round"
                         vectorEffect="non-scaling-stroke"

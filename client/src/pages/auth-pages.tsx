@@ -4,7 +4,9 @@ import { useAuth } from '@/auth/auth-context'
 import { Logo } from '@/components/logo'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Alert, Button, Field, Spinner } from '@/components/ui'
+import { usePlans } from '@/hooks/use-plans'
 import { ApiError, api } from '@/lib/api'
+import { formatInterval, formatRetention } from '@/lib/format'
 
 function AuthLayout({
     title,
@@ -146,6 +148,7 @@ export function LoginPage() {
 
 export function RegisterPage() {
     const { register } = useAuth()
+    const { free } = usePlans()
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -162,7 +165,11 @@ export function RegisterPage() {
     return (
         <AuthLayout
             title="Create your account"
-            subtitle="Free plan: 5 monitors, checked every 5 minutes, with 7 days of history."
+            subtitle={
+                free
+                    ? `${free.name} plan: ${free.maxMonitors} monitors, checked every ${formatInterval(free.checkIntervalSeconds)}, with ${formatRetention(free.retentionDays)} of history.`
+                    : 'Every account starts on the Free plan.'
+            }
             footer={
                 <>
                     Already have an account?{' '}

@@ -5,14 +5,26 @@ import { PublicFooter, PublicHeader } from '@/components/public-header'
 import { ResponseTimeChart } from '@/components/response-chart'
 import { StatusBadge, TimelineStrip } from '@/components/status'
 import { ButtonLink } from '@/components/ui'
-import type { MonitorStatus, TimelineBucket } from '@/lib/types'
+import { usePlans } from '@/hooks/use-plans'
+import { formatInterval, formatRetention } from '@/lib/format'
+import type { MonitorStatus, Plan, TimelineBucket } from '@/lib/types'
 import { cn } from '@/lib/utils'
+
+// Interval range across plans, read from the API ("every 5 minutes on Free,
+// down to every 30 seconds on Business").
+function scheduleText(plans: Plan[] | null) {
+    if (!plans?.length) return 'A real GET request from our servers on a schedule.'
+    const sorted = [...plans].sort((a, b) => b.checkIntervalSeconds - a.checkIntervalSeconds)
+    const slowest = sorted[0]
+    const fastest = sorted.at(-1) as Plan
+    return `A real GET request from our servers on a schedule: every ${formatInterval(slowest.checkIntervalSeconds)} on ${slowest.name}, down to every ${formatInterval(fastest.checkIntervalSeconds)} on ${fastest.name}.`
+}
 
 const STEPS: { state: MonitorStatus; title: string; body: string }[] = [
     {
         state: 'UP',
         title: 'Check',
-        body: 'A real GET request from our servers on a schedule: every 5 minutes on Free, down to every 30 seconds on Business. Any 2xx or 3xx answer passes.',
+        body: 'Any 2xx or 3xx answer passes.',
     },
     {
         state: 'PENDING',
@@ -122,7 +134,33 @@ function ExampleMonitor() {
     )
 }
 
+function HeroFacts() {
+    const { plans, free } = usePlans()
+    const retention = plans?.map((plan) => plan.retentionDays) ?? []
+    const facts = [
+        [free ? `${free.maxMonitors} monitors` : '–', `on the ${free?.name ?? 'Free'} plan`],
+        ['1 retry', 'before any alert'],
+        [
+            retention.length
+                ? `${formatRetention(Math.min(...retention))} to ${formatRetention(Math.max(...retention))}`
+                : '–',
+            'of history',
+        ],
+    ]
+    return (
+        <dl className="grid grid-cols-3 gap-x-8 font-mono text-[12px]">
+            {facts.map(([value, label]) => (
+                <div key={label}>
+                    <dt className="text-ink">{value}</dt>
+                    <dd className="text-ink-3">{label}</dd>
+                </div>
+            ))}
+        </dl>
+    )
+}
+
 export function LandingPage() {
+    const { plans } = usePlans()
     return (
         <div className="bg-paper">
             <PublicHeader />
@@ -152,18 +190,7 @@ export function LandingPage() {
                             Log in
                         </ButtonLink>
                     </div>
-                    <dl className="grid grid-cols-3 gap-x-8 font-mono text-[12px]">
-                        {[
-                            ['5 monitors', 'on the Free plan'],
-                            ['1 retry', 'before any alert'],
-                            ['7 to 365 days', 'of history'],
-                        ].map(([value, label]) => (
-                            <div key={value}>
-                                <dt className="text-ink">{value}</dt>
-                                <dd className="text-ink-3">{label}</dd>
-                            </div>
-                        ))}
-                    </dl>
+                    <HeroFacts />
                 </div>
             </section>
 
@@ -202,7 +229,9 @@ export function LandingPage() {
                                             <StatusBadge status={step.state} />
                                         </div>
                                         <p className="mt-2 max-w-[54ch] text-[15px] leading-relaxed text-ink-2">
-                                            {step.body}
+                                            {index === 0
+                                                ? `${scheduleText(plans)} ${step.body}`
+                                                : step.body}
                                         </p>
                                     </li>
                                 ))}

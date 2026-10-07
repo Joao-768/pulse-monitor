@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react'
 import { ButtonLink, Skeleton } from '@/components/ui'
-import { useApi } from '@/hooks/use-api'
+import { usePlans } from '@/hooks/use-plans'
 import { formatInterval, formatRetention } from '@/lib/format'
 import type { Plan } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 // Plan limits come from the API (/api/plans), the same constants the backend
 // enforces, so the table can never drift from the product.
 export function PricingTable() {
-    const { data, error } = useApi<{ plans: Plan[] }>('/plans')
+    const { plans, error } = usePlans()
 
     if (error) {
         return (
@@ -17,9 +17,8 @@ export function PricingTable() {
             </p>
         )
     }
-    if (!data) return <Skeleton className="h-80" />
+    if (!plans) return <Skeleton className="h-80" />
 
-    const plans = data.plans
     const rows: { label: string; value: (plan: Plan) => React.ReactNode }[] = [
         { label: 'Monitors', value: (plan) => plan.maxMonitors },
         {

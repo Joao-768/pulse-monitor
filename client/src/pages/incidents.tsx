@@ -36,10 +36,15 @@ export function IncidentsPage() {
                         the next successful check.
                     </p>
                 </div>
-                <div className="inline-flex rounded-md border border-rule-strong bg-surface p-0.5">
+                <div
+                    role="group"
+                    aria-label="Filter incidents"
+                    className="inline-flex rounded-md border border-rule-strong bg-surface p-0.5"
+                >
                     {FILTERS.map((item) => (
                         <button
                             key={item.key}
+                            type="button"
                             aria-pressed={status === item.key}
                             onClick={() => {
                                 setStatus(item.key)
@@ -48,7 +53,7 @@ export function IncidentsPage() {
                             className={cn(
                                 'h-8 rounded px-3 text-[13px] font-medium',
                                 status === item.key
-                                    ? 'bg-primary text-primary-fg'
+                                    ? 'bg-signal text-signal-fg'
                                     : 'text-ink-2 hover:bg-paper',
                             )}
                         >
@@ -118,7 +123,7 @@ export function IncidentsPage() {
                                             </td>
                                             <td className="px-5 py-3 font-mono text-[12.5px] whitespace-nowrap">
                                                 {incident.active ? (
-                                                    <span className="rounded-full bg-down px-2 py-0.5 text-[10px] tracking-wide text-white uppercase">
+                                                    <span className="rounded-full bg-danger px-2 py-0.5 text-[10px] tracking-wide text-danger-fg uppercase">
                                                         Ongoing
                                                     </span>
                                                 ) : (
@@ -127,11 +132,18 @@ export function IncidentsPage() {
                                                             incident.resolvedAt as string,
                                                             false,
                                                         )}
-                                                        {incident.resolution === 'PAUSED' ? (
-                                                            <span className="ml-1.5 text-ink-3">
-                                                                (paused)
-                                                            </span>
-                                                        ) : null}
+                                                        <span
+                                                            className={cn(
+                                                                'ml-2 text-[11px]',
+                                                                incident.resolution === 'PAUSED'
+                                                                    ? 'text-ink-3'
+                                                                    : 'text-up-text',
+                                                            )}
+                                                        >
+                                                            {incident.resolution === 'PAUSED'
+                                                                ? 'ended by pause'
+                                                                : 'recovered'}
+                                                        </span>
                                                     </span>
                                                 )}
                                             </td>
