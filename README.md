@@ -8,6 +8,10 @@ every incident.
 Everything is real. Checks are HTTP requests made with Node's native `fetch`, all data lives in
 PostgreSQL, and the scheduler runs on the server whether or not anyone has the app open.
 
+**Live demo: https://pulse-monitor-84yn.onrender.com** (log in with `demo@pulsemonitor.dev` /
+`pulse-demo-2026`). It runs on Render's free tier, so after a quiet spell the first visit takes
+up to a minute to wake the server, and charts show a gap for the time it slept.
+
 ![Dashboard: six monitors with 24-hour availability strips, response times and uptime](docs/screenshots/dashboard.png)
 
 | Monitor page (dark, the default)                                                                                                         | Light theme                                                                                 |
