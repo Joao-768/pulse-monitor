@@ -9,7 +9,7 @@
         "db:migrate": "npm --prefix server run db:migrate",
         "db:seed": "npm --prefix server run db:seed",
         "test": "npm --prefix server test",
-        "build": "npm --prefix server ci --omit=dev && npm --prefix client ci && npm --prefix client run build",
+        "build": "npm --prefix server ci --omit=dev && npm --prefix client ci --include=dev && npm --prefix client run build",
         "start": "npm --prefix server start"
     }
 }

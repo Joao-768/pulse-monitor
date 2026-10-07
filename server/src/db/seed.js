@@ -339,6 +339,16 @@ export async function seed() {
     })
 }
 
+// For hosted demos (SEED_DEMO=true): builds the demo account only when it is
+// missing, so a restart never throws away the history the scheduler has
+// added since.
+export async function seedIfMissing() {
+    const { rows } = await pool.query('SELECT 1 FROM users WHERE email = $1', [DEMO_EMAIL])
+    if (rows.length > 0) return false
+    await seed()
+    return true
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     migrate()
         .then(seed)
