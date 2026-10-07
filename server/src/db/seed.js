@@ -65,8 +65,10 @@ const MONITORS = [
         ],
     },
     {
-        name: 'GitHub API',
-        url: 'https://api.github.com/',
+        // The status page API, not api.github.com: unauthenticated GitHub API
+        // calls are rate limited per IP and answer 403 from shared cloud hosts.
+        name: 'GitHub status',
+        url: 'https://www.githubstatus.com/api/v2/status.json',
         createdAgo: 30 * DAY,
         baseLatency: 95,
         incidents: [{ ago: 12 * DAY + 5 * HOUR, duration: 23 * MINUTE, failure: 'HTTP_503' }],

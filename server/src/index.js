@@ -3,13 +3,16 @@
 import { createApp } from './app.js'
 import { env } from './config/env.js'
 import { migrate } from './db/migrate.js'
-import { seedIfMissing } from './db/seed.js'
+import { seed, seedIfMissing } from './db/seed.js'
 import { pool } from './db/pool.js'
 import { startScheduler } from './monitoring/scheduler.js'
 import { logger } from './utils/logger.js'
 
 await migrate()
-if (env.seedDemo && (await seedIfMissing())) {
+if (env.seedDemo === 'reset') {
+    await seed()
+    logger.info('Demo account rebuilt (SEED_DEMO=reset)')
+} else if (env.seedDemo === 'true' && (await seedIfMissing())) {
     logger.info('Demo account created (SEED_DEMO)')
 }
 

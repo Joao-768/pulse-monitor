@@ -51,7 +51,8 @@ export const env = {
     allowPrivateTargets: bool('ALLOW_PRIVATE_TARGETS', false),
     // Serve the built client from Express (single Render web service).
     serveClient: bool('SERVE_CLIENT', isProduction),
-    // Create the demo account on startup if it does not exist (hosted demos).
-    seedDemo: bool('SEED_DEMO', false),
+    // Hosted demos: 'true' creates the demo account on startup if it is
+    // missing; 'reset' rebuilds it on every start (set it for one deploy).
+    seedDemo: ['true', 'reset'].includes(process.env.SEED_DEMO) ? process.env.SEED_DEMO : null,
     logLevel: process.env.LOG_LEVEL || (isProduction ? 'info' : 'debug'),
 }

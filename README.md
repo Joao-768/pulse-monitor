@@ -204,14 +204,14 @@ Creates the demo account on the Pro plan with six monitors and 30 days of histor
 checks). The monitors point at **real public URLs**, and from the moment the server starts the
 scheduler keeps checking them for real:
 
-| Monitor              | URL                                        | State                                                   |
-| -------------------- | ------------------------------------------ | ------------------------------------------------------- |
-| Marketing site       | `https://example.com/`                     | Up, two resolved incidents                              |
-| GitHub API           | `https://api.github.com/`                  | Up, one resolved incident                               |
-| Wikipedia            | `https://en.wikipedia.org/wiki/Main_Page`  | Up, latency rising over the last 3 days, one past pause |
-| Billing API (legacy) | `https://httpbin.org/status/503`           | Down, active incident (the URL really answers 503)      |
-| Docs site            | `https://developer.mozilla.org/en-US/`     | Paused two days ago, history kept                       |
-| Edge trace           | `https://www.cloudflare.com/cdn-cgi/trace` | Up, created five days ago                               |
+| Monitor              | URL                                               | State                                                   |
+| -------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| Marketing site       | `https://example.com/`                            | Up, two resolved incidents                              |
+| GitHub status        | `https://www.githubstatus.com/api/v2/status.json` | Up, one resolved incident                               |
+| Wikipedia            | `https://en.wikipedia.org/wiki/Main_Page`         | Up, latency rising over the last 3 days, one past pause |
+| Billing API (legacy) | `https://httpbin.org/status/503`                  | Down, active incident (the URL really answers 503)      |
+| Docs site            | `https://developer.mozilla.org/en-US/`            | Paused two days ago, history kept                       |
+| Edge trace           | `https://www.cloudflare.com/cdn-cgi/trace`        | Up, created five days ago                               |
 
 The past history is generated (deterministic, with daily cycles, noise, spikes, retries and blips);
 everything after the seed is produced by real checks. Re-running the seed rebuilds the demo account
@@ -236,21 +236,21 @@ NODE_ENV=production npm start
 All in `server/.env` (see `server/.env.example`). The server refuses to start without the required
 ones.
 
-| Variable                | Required | Default                                 | Purpose                                                             |
-| ----------------------- | -------- | --------------------------------------- | ------------------------------------------------------------------- |
-| `DATABASE_URL`          | yes      |                                         | PostgreSQL connection string                                        |
-| `JWT_SECRET`            | yes      |                                         | Signs session tokens. At least 32 characters in production.         |
-| `APP_URL`               | no       | `http://localhost:5174`                 | Public URL of the app: reset links and the CSRF origin check        |
-| `RESEND_API_KEY`        | no       | empty                                   | Resend key. Empty in development prints emails to the log.          |
-| `EMAIL_FROM`            | no       | `Pulse Monitor <onboarding@resend.dev>` | Sender address, must be a domain verified in Resend                 |
-| `PORT`                  | no       | `4000`                                  | HTTP port                                                           |
-| `NODE_ENV`              | no       | `development`                           | `production` enables secure cookies, HSTS, JSON logs, static client |
-| `DATABASE_SSL`          | no       | `true` in production                    | TLS for the database connection                                     |
-| `RUN_SCHEDULER`         | no       | `true`                                  | Run checks inside the API process                                   |
-| `ALLOW_PRIVATE_TARGETS` | no       | `false`                                 | Allow monitors on localhost and private networks (testing only)     |
-| `SERVE_CLIENT`          | no       | `true` in production                    | Serve `client/dist` from Express                                    |
-| `SEED_DEMO`             | no       | `false`                                 | Create the demo account on startup if it does not exist yet         |
-| `LOG_LEVEL`             | no       | `debug` in dev, `info` in prod          | `debug`, `info`, `warn` or `error`                                  |
+| Variable                | Required | Default                                 | Purpose                                                                                                    |
+| ----------------------- | -------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`          | yes      |                                         | PostgreSQL connection string                                                                               |
+| `JWT_SECRET`            | yes      |                                         | Signs session tokens. At least 32 characters in production.                                                |
+| `APP_URL`               | no       | `http://localhost:5174`                 | Public URL of the app: reset links and the CSRF origin check                                               |
+| `RESEND_API_KEY`        | no       | empty                                   | Resend key. Empty in development prints emails to the log.                                                 |
+| `EMAIL_FROM`            | no       | `Pulse Monitor <onboarding@resend.dev>` | Sender address, must be a domain verified in Resend                                                        |
+| `PORT`                  | no       | `4000`                                  | HTTP port                                                                                                  |
+| `NODE_ENV`              | no       | `development`                           | `production` enables secure cookies, HSTS, JSON logs, static client                                        |
+| `DATABASE_SSL`          | no       | `true` in production                    | TLS for the database connection                                                                            |
+| `RUN_SCHEDULER`         | no       | `true`                                  | Run checks inside the API process                                                                          |
+| `ALLOW_PRIVATE_TARGETS` | no       | `false`                                 | Allow monitors on localhost and private networks (testing only)                                            |
+| `SERVE_CLIENT`          | no       | `true` in production                    | Serve `client/dist` from Express                                                                           |
+| `SEED_DEMO`             | no       | unset                                   | `true`: create the demo account on startup if missing; `reset`: rebuild it on every start (for one deploy) |
+| `LOG_LEVEL`             | no       | `debug` in dev, `info` in prod          | `debug`, `info`, `warn` or `error`                                                                         |
 
 ## Database
 
