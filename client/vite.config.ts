@@ -13,8 +13,12 @@ export default defineConfig({
     server: {
         port: 5174,
         strictPort: true,
+        // The api-joao-caetano host serves this project's API at /pulse.
         proxy: {
-            '/api': 'http://localhost:4000',
+            '/api': {
+                target: 'http://localhost:4400',
+                rewrite: (path) => `/pulse${path}`,
+            },
         },
     },
 })

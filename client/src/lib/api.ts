@@ -1,6 +1,11 @@
 // Thin fetch wrapper. The session lives in an httpOnly cookie, so requests
 // only need `credentials: 'include'`; the client never touches the token.
 
+// Production: https://api.joao-caetano.com/pulse (.env.production), a different
+// origin on the same site, so the session cookie still travels. Development:
+// empty, and the Vite dev server proxies /api.
+export const API_BASE: string = import.meta.env.VITE_API_URL ?? ''
+
 export class ApiError extends Error {
     status: number
     code: string
@@ -26,7 +31,7 @@ export function onUnauthorized(listener: Listener) {
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
     let response: Response
     try {
-        response = await fetch(`/api${path}`, {
+        response = await fetch(`${API_BASE}/api${path}`, {
             method,
             credentials: 'include',
             headers: body === undefined ? undefined : { 'content-type': 'application/json' },

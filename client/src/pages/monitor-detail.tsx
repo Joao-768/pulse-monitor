@@ -10,7 +10,7 @@ import { buttonClass } from '@/components/button-class'
 import { Alert, Button, Panel, PanelHeader, Skeleton } from '@/components/ui'
 import { useApi } from '@/hooks/use-api'
 import { useNow } from '@/hooks/use-now'
-import { ApiError, api } from '@/lib/api'
+import { API_BASE, ApiError, api } from '@/lib/api'
 import {
     formatDateTime,
     formatDuration,
@@ -427,7 +427,7 @@ export function MonitorDetailPage() {
     const { monitor, lastCheck } = detail.data
     const m = metrics.data
     const paused = monitor.status === 'PAUSED'
-    const exportBase = `/api/monitors/${monitor.id}/export`
+    const exportBase = `${API_BASE}/api/monitors/${monitor.id}/export`
 
     return (
         <div className="space-y-6">
