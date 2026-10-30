@@ -41,6 +41,7 @@ before(async () => {
     baseUrl = `http://127.0.0.1:${server.address().port}`
     await query("DELETE FROM users WHERE email = 'lifecycle-test@example.com'")
     user = await authService.register({
+        name: 'Lifecycle test',
         email: 'lifecycle-test@example.com',
         password: 'test-password-1',
     })
