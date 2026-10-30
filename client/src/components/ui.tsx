@@ -1,9 +1,11 @@
 import {
     forwardRef,
+    useState,
     type ButtonHTMLAttributes,
     type InputHTMLAttributes,
     type ReactNode,
 } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { Link, type LinkProps } from 'react-router-dom'
 import { buttonClass, type Size, type Variant } from '@/components/button-class'
 import { cn } from '@/lib/utils'
@@ -63,8 +65,13 @@ interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {
     hint?: ReactNode
 }
 
-export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
-    { label, error, hint, id, className, ...props },
+interface FieldFrameProps extends FieldProps {
+    // Sits over the right edge of the input, e.g. a show-password button.
+    trailing?: ReactNode
+}
+
+const FieldFrame = forwardRef<HTMLInputElement, FieldFrameProps>(function FieldFrame(
+    { label, error, hint, trailing, id, className, ...props },
     ref,
 ) {
     const inputId = id ?? props.name
@@ -73,14 +80,17 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
             <label htmlFor={inputId} className="mb-1.5 block text-[13px] font-medium text-ink-2">
                 {label}
             </label>
-            <input
-                ref={ref}
-                id={inputId}
-                className="field"
-                aria-invalid={error ? true : undefined}
-                aria-describedby={error ? `${inputId}-error` : undefined}
-                {...props}
-            />
+            <div className="relative">
+                <input
+                    ref={ref}
+                    id={inputId}
+                    className={cn('field', trailing ? 'pr-11' : null)}
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? `${inputId}-error` : undefined}
+                    {...props}
+                />
+                {trailing}
+            </div>
             {error ? (
                 <p id={`${inputId}-error`} className="mt-1.5 text-[13px] text-down">
                     {error}
@@ -91,6 +101,36 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
         </div>
     )
 })
+
+export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(props, ref) {
+    return <FieldFrame ref={ref} {...props} />
+})
+
+// A password input with an eye button that toggles the characters visible.
+export const PasswordField = forwardRef<HTMLInputElement, Omit<FieldProps, 'type'>>(
+    function PasswordField(props, ref) {
+        const [visible, setVisible] = useState(false)
+        const Icon = visible ? EyeOff : Eye
+        return (
+            <FieldFrame
+                ref={ref}
+                {...props}
+                type={visible ? 'text' : 'password'}
+                trailing={
+                    <button
+                        type="button"
+                        onClick={() => setVisible((value) => !value)}
+                        aria-label={visible ? 'Hide password' : 'Show password'}
+                        aria-pressed={visible}
+                        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-md text-ink-3 transition-colors hover:text-ink"
+                    >
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                }
+            />
+        )
+    },
+)
 
 export function Alert({
     tone = 'error',

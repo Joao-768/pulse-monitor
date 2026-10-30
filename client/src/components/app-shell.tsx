@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useAuth } from '@/auth/auth-context'
 import { Logo } from '@/components/logo'
@@ -58,13 +58,13 @@ export function AppShell() {
             {/* One row from sm up; on phones the tabs drop to a second row. */}
             <header className="sticky top-0 z-30 border-b border-white/8 bg-masthead">
                 <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 px-4 sm:h-14 sm:flex-nowrap sm:px-6">
-                    <NavLink
-                        to="/app"
-                        aria-label="PulseMonitor dashboard"
+                    <Link
+                        to="/"
+                        aria-label="PulseMonitor home"
                         className="flex h-14 shrink-0 items-center"
                     >
                         <Logo inverted />
-                    </NavLink>
+                    </Link>
                     <nav
                         className="order-last -mx-4 flex h-11 w-[calc(100%+2rem)] items-center gap-5 overflow-x-auto border-t border-white/10 px-4 sm:order-none sm:mx-0 sm:h-full sm:w-auto sm:border-t-0 sm:px-0"
                         aria-label="Main"
@@ -85,7 +85,7 @@ export function AppShell() {
                     <div className="ml-auto flex shrink-0 items-center gap-2">
                         <div className="hidden text-right leading-tight md:block">
                             <div className="max-w-[16rem] truncate text-[13px] text-white/85">
-                                {user?.email}
+                                {user?.name || user?.email}
                             </div>
                             <div className="font-mono text-[10px] tracking-[0.08em] text-white/45 uppercase">
                                 {user?.plan.name} plan

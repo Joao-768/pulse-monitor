@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 import { useAuth } from '@/auth/auth-context'
 import { Logo } from '@/components/logo'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Alert, Button, Field, Spinner } from '@/components/ui'
+import { Alert, Button, Field, PasswordField, Spinner } from '@/components/ui'
 import { usePlans } from '@/hooks/use-plans'
 import { ApiError, api } from '@/lib/api'
 import { formatInterval, formatRetention } from '@/lib/format'
@@ -150,14 +150,22 @@ export function RegisterPage() {
     const { register } = useAuth()
     const { free } = usePlans()
     const navigate = useNavigate()
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirm, setConfirm] = useState('')
+    const [mismatch, setMismatch] = useState('')
     const { errors, formError, busy, run } = useFormState()
 
     function submit(event: FormEvent) {
         event.preventDefault()
+        if (password !== confirm) {
+            setMismatch('The two passwords do not match.')
+            return
+        }
+        setMismatch('')
         run(async () => {
-            await register(email, password)
+            await register(name, email, password)
             navigate('/app', { replace: true })
         })
     }
@@ -194,6 +202,17 @@ export function RegisterPage() {
                     </Alert>
                 ) : null}
                 <Field
+                    label="Name"
+                    name="name"
+                    autoComplete="name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    error={errors.name}
+                    maxLength={80}
+                    autoFocus
+                    required
+                />
+                <Field
                     label="Email"
                     name="email"
                     type="email"
@@ -201,18 +220,25 @@ export function RegisterPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     error={errors.email}
-                    autoFocus
                     required
                 />
-                <Field
+                <PasswordField
                     label="Password"
                     name="password"
-                    type="password"
                     autoComplete="new-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     error={errors.password}
                     hint="At least 8 characters."
+                    required
+                />
+                <PasswordField
+                    label="Confirm password"
+                    name="confirm"
+                    autoComplete="new-password"
+                    value={confirm}
+                    onChange={(event) => setConfirm(event.target.value)}
+                    error={mismatch}
                     required
                 />
                 <Button type="submit" size="lg" className="w-full" busy={busy}>

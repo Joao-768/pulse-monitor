@@ -14,6 +14,7 @@ export interface Plan {
 export interface User {
     id: string
     email: string
+    name: string
     plan: Plan
     createdAt: string
 }
