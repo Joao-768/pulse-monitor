@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /*
- * Pulse Monitor tokens.
+ * PulseMonitor tokens.
  * Black and white: pure black or white pages, neutral greys with no tint, and
  * status colours that mean one thing each. The accent ("signal") is neutral
  * too, so the only colours on screen are the status ones. Charts and the logo

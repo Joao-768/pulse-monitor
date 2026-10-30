@@ -173,7 +173,7 @@ export function LandingPage() {
                         Know the moment it stops answering.
                     </h1>
                     <p className="mt-5 max-w-[52ch] text-[clamp(1rem,1.3vw,1.2rem)] leading-relaxed text-ink-2">
-                        Pulse Monitor checks your websites and API endpoints around the clock,
+                        PulseMonitor checks your websites and API endpoints around the clock,
                         confirms every failure before calling it downtime, and keeps the full
                         record: uptime, response time, incidents and recoveries.
                     </p>
@@ -205,7 +205,7 @@ export function LandingPage() {
                                     One failed request is not an outage.
                                 </h2>
                                 <p className="mt-6 max-w-[46ch] text-[clamp(1rem,1.25vw,1.15rem)] leading-relaxed text-ink-2">
-                                    Networks drop packets and servers hiccup. Pulse Monitor confirms
+                                    Networks drop packets and servers hiccup. PulseMonitor confirms
                                     a failure with a quick retry before it opens an incident, so an
                                     alert means something is really wrong, and the downtime you see
                                     is downtime that happened.

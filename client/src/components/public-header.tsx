@@ -12,7 +12,7 @@ export function PublicHeader() {
             style={{ height: 'var(--masthead-height)' }}
         >
             <div className="mx-auto flex h-full max-w-7xl items-center gap-8 px-4 sm:px-6">
-                <Link to="/" aria-label="Pulse Monitor home">
+                <Link to="/" aria-label="PulseMonitor home">
                     <Logo />
                 </Link>
                 <nav

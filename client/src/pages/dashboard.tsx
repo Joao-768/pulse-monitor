@@ -186,7 +186,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
                 Nothing is being watched yet
             </h2>
             <p className="mx-auto mt-2 max-w-md text-sm text-ink-2">
-                Add the first website or API endpoint. Pulse Monitor checks it right away and then
+                Add the first website or API endpoint. PulseMonitor checks it right away and then
                 on a schedule, whether or not this page is open.
             </p>
             <Button className="mt-6" onClick={onAdd}>

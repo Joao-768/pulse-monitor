@@ -60,7 +60,7 @@ export function AppShell() {
                 <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 px-4 sm:h-14 sm:flex-nowrap sm:px-6">
                     <NavLink
                         to="/app"
-                        aria-label="Pulse Monitor dashboard"
+                        aria-label="PulseMonitor dashboard"
                         className="flex h-14 shrink-0 items-center"
                     >
                         <Logo inverted />

@@ -207,7 +207,7 @@ export function Area({
     // Resolved stroke color (defaults to fill; pattern URLs need a real color)
     const resolvedStroke = stroke || (isPatternFill ? chartCssVars.linePrimary : fill)
 
-    // Pulse Monitor: points whose value is not a number (null) break the line
+    // PulseMonitor: points whose value is not a number (null) break the line
     // and the fill, so gaps in the data show as gaps instead of being bridged.
     const isDefined = useCallback(
         (d: Record<string, unknown>) => typeof d[dataKey] === 'number',

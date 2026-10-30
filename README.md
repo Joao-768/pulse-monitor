@@ -1,6 +1,6 @@
-# Pulse Monitor
+# PulseMonitor
 
-Uptime monitoring for websites and APIs. Add a URL and Pulse Monitor checks it from the server on a
+Uptime monitoring for websites and APIs. Add a URL and PulseMonitor checks it from the server on a
 schedule, confirms every failure with a retry, opens an incident when the service is really down,
 closes it on recovery, and keeps the whole record: uptime, downtime, response time, every check and
 every incident.
@@ -246,7 +246,7 @@ ones.
 | `JWT_SECRET`            | yes      |                                         | Signs session tokens. At least 32 characters in production.                                                |
 | `APP_URL`               | no       | `http://localhost:5174`                 | Public URL of the app: reset links and the CSRF origin check                                               |
 | `RESEND_API_KEY`        | no       | empty                                   | Resend key. Empty in development prints emails to the log.                                                 |
-| `EMAIL_FROM`            | no       | `Pulse Monitor <onboarding@resend.dev>` | Sender address, must be a domain verified in Resend                                                        |
+| `EMAIL_FROM`            | no       | `PulseMonitor <onboarding@resend.dev>` | Sender address, must be a domain verified in Resend                                                        |
 | `PORT`                  | no       | `4000`                                  | HTTP port                                                                                                  |
 | `NODE_ENV`              | no       | `development`                           | `production` enables secure cookies, HSTS, JSON logs, static client                                        |
 | `DATABASE_SSL`          | no       | `true` in production                    | TLS for the database connection                                                                            |
@@ -452,7 +452,7 @@ reset email. Setup:
 
 1. Create an API key at https://resend.com/api-keys and set `RESEND_API_KEY`.
 2. Verify a sending domain in Resend and set `EMAIL_FROM`, for example
-   `Pulse Monitor <no-reply@yourdomain.com>`. Without a verified domain, Resend only delivers
+   `PulseMonitor <no-reply@yourdomain.com>`. Without a verified domain, Resend only delivers
    `onboarding@resend.dev` mail to your own address.
 3. Set `APP_URL` to the public URL so reset links point at the right host.
 

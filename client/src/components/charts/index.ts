@@ -1,4 +1,4 @@
-// Barrel for the Bklit chart components used by Pulse Monitor.
+// Barrel for the Bklit chart components used by PulseMonitor.
 export { AreaChart, Area } from './area-chart'
 export { LineChart } from './line-chart'
 export { Line } from './line'

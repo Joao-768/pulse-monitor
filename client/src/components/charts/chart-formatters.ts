@@ -19,7 +19,7 @@ export const hmsTimeFmt = new Intl.DateTimeFormat('en-US', {
 // `Intl.NumberFormat.prototype.format` is a bound getter, safe to extract.
 export const intFmt = new Intl.NumberFormat('en-US').format
 
-// Pulse Monitor: time-of-day labels for short windows, where a day-only label
+// PulseMonitor: time-of-day labels for short windows, where a day-only label
 // would collapse every tick into the same date.
 export const hourMinuteFmt = new Intl.DateTimeFormat('en-GB', {
     hour: '2-digit',

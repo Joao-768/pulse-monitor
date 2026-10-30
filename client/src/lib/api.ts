@@ -41,7 +41,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
         throw new ApiError(
             0,
             'NETWORK',
-            'Cannot reach Pulse Monitor. Check your connection and try again.',
+            'Cannot reach PulseMonitor. Check your connection and try again.',
         )
     }
 

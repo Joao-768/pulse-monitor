@@ -440,7 +440,7 @@ function buildDomainTicks({
     const endTime = endDate.getTime()
     const timeRange = endTime - startTime
     const tickCount = Math.max(2, numTicks)
-    // Pulse Monitor: times of day for short spans, dates for long ones.
+    // PulseMonitor: times of day for short spans, dates for long ones.
     const formatter = axisDateFormatterForSpan(timeRange)
     const seenLabels = new Set<string>()
     const ticks: AxisTick[] = []
